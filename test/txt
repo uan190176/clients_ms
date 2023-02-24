@@ -1,0 +1,16 @@
+type RequestCountriesDeletionFlags struct {
+    AuthorId      uint64
+    IsDeleted     bool
+    CountryId     []uint64
+}
+содержит
+7
+true
+[20, 22, 24, 25, 26]
+нужно преобразовать в формат [][]interface{}, чтобы получилось
+[20, true, 7]
+[22, true, 7]
+[24, true, 7]
+[25, true, 7]
+[26, true, 7]
+напиши функцию

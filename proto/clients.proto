@@ -1,0 +1,190 @@
+syntax = "proto3";
+option go_package = "internal/api";
+package clients;
+
+//***********************************************************************
+// Enums
+//***********************************************************************
+
+// ============== //
+// Boolean fields //
+// ============== //
+
+enum ClientsMS_Bool {
+  IS_ANY = 0;
+  IS_FALSE = 1;
+  IS_TRUE = 2;
+}
+
+// =============== //
+//      Orders     //
+// =============== //
+
+//Order type for all entities
+enum ClientsMS_OrderType {
+  ASC = 0;
+  DESC = 1;
+}
+
+//Countries
+enum ClientsMS_CountryOrder {
+  BY_COUNTRY_ID = 0;
+  BY_COUNTRY_NAME = 1;
+  BY_COUNTRY_CREATED = 2;
+  BY_COUNTRY_CHANGED = 3;
+}
+
+//Address type
+enum ClientsMS_AddressTypesOrder {
+  BY_ADDR_TYPE_ID = 0;
+  BY_ADDR_TYPE_NAME = 1;
+  BY_ADDR_TYPE_CODE = 2;
+  BY_ADDR_TYPE_CREATED = 3;
+  BY_ADDR_TYPE_CHANGED = 4;
+}
+
+//***********************************************************************
+// SERVICES
+//***********************************************************************
+service ClientsServices {
+
+  // Countries
+  rpc GetCountries(RequestCountry) returns (ResponseCountries) {} //pass
+  rpc CreateCountry(RequestCountry) returns (ResponseCountries) {} //pass
+  rpc UpdateCountry(RequestCountry) returns (ResponseCountries) {} //pass
+  rpc UpdateCountriesDeletionFlags(RequestCountriesDeletionFlags) returns (ResponseCountries) {} //pass
+
+  // Address types
+  rpc GetAddressesTypes(RequestAddressType) returns (ResponseAddressesTypes) {} //pass
+  rpc CreateAddressType(RequestAddressType) returns (ResponseAddressesTypes) {} //pass
+  rpc UpdateAddressType(RequestAddressType) returns (ResponseAddressesTypes) {} //
+  rpc UpdateAddressTypeDeletionFlags(RequestAddressesTypesDeletionFlags) returns (ResponseAddressesTypes) {} //
+}
+
+
+//***********************************************************************
+// Requests
+//***********************************************************************
+
+// =============== //
+//   Countries     //
+// =============== //
+message RequestCountry {
+  string AuthToken = 1;
+  fixed64 CountryId = 2;
+  string CountryName = 3;
+  string CountryComment = 4;
+  ClientsMS_Bool CountryIsDeleted = 5;
+  //Order in query
+  ClientsMS_CountryOrder CountryOrder = 6;
+  ClientsMS_OrderType CountryOrderType = 7;
+  //AuthorId needed to create and update
+  fixed64 AuthorId = 8;
+}
+message RequestCountriesDeletionFlags {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  ClientsMS_Bool IsDeleted = 3;
+  repeated fixed64 CountryId = 4;
+}
+
+
+// =============== //
+// Address types   //
+// =============== //
+message RequestAddressType {
+  string AuthToken = 1;
+  fixed64 AddrTypeID = 2;
+  string AddrTypeCode = 3;
+  string AddrTypeName = 4;
+  string AddrTypeComment = 5;
+  ClientsMS_Bool AddrTypeNeedsCleaning = 6;
+  ClientsMS_Bool AddrTypeNeedsNormalizing = 7;
+  ClientsMS_Bool AddrTypeIsDeleted = 8;
+  fixed64 AuthorId = 9;
+  ClientsMS_AddressTypesOrder AddressTypesOrder = 10;
+  ClientsMS_OrderType AddressTypesOrderType = 11;
+}
+message RequestAddressesTypesDeletionFlags {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  ClientsMS_Bool AddrTypeIsDeleted = 3;
+  repeated fixed64 AddrTypeID = 4;
+}
+//***********************************************************************
+// Responses
+//***********************************************************************
+
+// =============== //
+//   Status        //
+// =============== //
+message ClientsMS_Status {
+  int32 Code = 1;
+  string Description = 2;
+}
+
+// =============== //
+//   Countries     //
+// =============== //
+message Country {
+  // @gotags: db:"country_id"
+  fixed64 CountryId = 1;
+  // @gotags: db:"country_name"
+  string CountryName = 2;
+  // @gotags: db:"country_comment"
+  string Comment = 3;
+  // @gotags: db:"country_created"
+  string CountryCreated = 4;
+  // @gotags: db:"country_created_by"
+  fixed64 CountryCreatedBy = 5;
+  // @gotags: db:"country_created_by_name"
+  string CountryCreatedByName = 6;
+  // @gotags: db:"country_changed"
+  string CountryChanged = 7;
+  // @gotags: db:"country_changed_by"
+  fixed64 CountryChangedBy = 8;
+  // @gotags: db:"country_changed_by_name"
+  string CountryChangedByName = 9;
+  // @gotags: db:"country_isdeleted"
+  bool CountryIsDeleted = 10;
+}
+message ResponseCountries {
+  repeated Country Countries = 1;
+  ClientsMS_Status Status = 2;
+}
+
+// =============== //
+// Address types   //
+// =============== //
+message AddressType {
+  // @gotags: db:"address_type_id"
+  fixed64 AddrTypeId = 1;
+  // @gotags: db:"address_type_name"
+  string AddrTypeName = 2;
+  // @gotags: db:"address_type_code"
+  string AddrTypeCode = 3;
+  // @gotags: db:"address_type_comment"
+  string AddrTypeComment = 4;
+  // @gotags: db:"address_type_needs_normalizing"
+  bool AddrTypeNeedsNormalizing = 5;
+  // @gotags: db:"address_type_needs_cleaning"
+  bool AddrTypeNeedsCleaning = 6;
+  // @gotags: db:"address_type_isdeleted"
+  bool AddrTypeIsDeleted = 7;
+  // @gotags: db:"address_type_created"
+  string AddrTypeCreated = 8;
+  // @gotags: db:"address_type_created_by"
+  fixed64 AddrTypeCreatedBy = 9;
+  // @gotags: db:"address_type_created_by_name"
+  string AddrTypeCreatedByName = 10;
+  // @gotags: db:"address_type_changed"
+  string AddrTypeChanged = 11;
+  // @gotags: db:"address_type_changed_by"
+  fixed64 AddrTypeChangedBy = 12;
+  // @gotags: db:"address_type_changed_by_name"
+  string AddrTypeChangedByName = 13;
+}
+message ResponseAddressesTypes {
+  repeated AddressType AddressesTypes = 1;
+  ClientsMS_Status Status = 2;
+}

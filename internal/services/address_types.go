@@ -28,11 +28,11 @@ func (s *GrpcClientsServer) GetAddressesTypes(ctx context.Context, req *api.Requ
 
 	//Check UAR
 	lgr.LOG.Info("_ACTION_: ", "checking users access rights")
-	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUARforTable{
+	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.addresses_types",
-		Action:    api.UAR_Actions_CAN_SELECT,
+		TableName: "public.addresses_types_ref",
+		Action:    api.UsersAccessRights_Actions_CAN_SELECT,
 	})
 
 	//error
@@ -84,11 +84,11 @@ func (s *GrpcClientsServer) CreateAddressType(ctx context.Context, req *api.Requ
 	}
 
 	lgr.LOG.Info("_ACTION_: ", "checking users access rights")
-	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUARforTable{
+	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.addresses_types",
-		Action:    api.UAR_Actions_CAN_INSERT,
+		TableName: "public.addresses_types_ref",
+		Action:    api.UsersAccessRights_Actions_CAN_INSERT,
 	})
 
 	//error
@@ -141,11 +141,11 @@ func (s *GrpcClientsServer) UpdateAddressType(ctx context.Context, req *api.Requ
 
 	// Check uars
 	lgr.LOG.Info("_ACTION_: ", "checking users access rights")
-	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUARforTable{
+	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.addresses_types",
-		Action:    api.UAR_Actions_CAN_UPDATE,
+		TableName: "public.addresses_types_ref",
+		Action:    api.UsersAccessRights_Actions_CAN_UPDATE,
 	})
 
 	//error
@@ -196,11 +196,11 @@ func (s *GrpcClientsServer) UpdateAddressTypeDeletionFlags(ctx context.Context, 
 	}
 
 	lgr.LOG.Info("_ACTION_: ", "checking users access rights")
-	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUARforTable{
+	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.addresses_types",
-		Action:    api.UAR_Actions_CAN_DELETE,
+		TableName: "public.addresses_types_ref",
+		Action:    api.UsersAccessRights_Actions_CAN_DELETE,
 	})
 
 	//error

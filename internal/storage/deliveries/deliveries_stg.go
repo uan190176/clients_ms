@@ -1,4 +1,4 @@
-package address_types
+package deliveries
 
 import (
 	"clients_ms/internal/api"
@@ -9,29 +9,29 @@ import (
 	st "github.com/uan190176/statuses"
 )
 
-// GetAddressTypes - returns countries
-func GetAddressTypes(ctx context.Context, req *api.RequestAddressType) ([]*api.AddressType, st.ResponseStatus) {
+// GetDeliveries - returns deliveries
+func GetDeliveries(ctx context.Context, req *api.RequestDelivery) ([]*api.Delivery, st.ResponseStatus) {
 
-	lgr.LOG.Info("-->> ", "address_types.GetAddressTypes()")
+	lgr.LOG.Info("-->> ", "deliveries.GetCountries()")
 
 	// Vars
 	var (
-		s         *fs.Storage
-		q         string
-		addrTypes []*api.AddressType
-		err       error
+		s          *fs.Storage
+		q          string
+		deliveries []*api.Delivery
+		err        error
 	)
 
 	//Generate query
 	lgr.LOG.Info("_ACTION_: ", "generate query")
-	q = GenQueryAddressesTypesSelect(req)
+	q = GenQueryDeliveriesSelect(req)
 
 	//Create storage parameters
-	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
+	lgr.LOG.Info("_ACTION_: ", "creating storage parameters")
 	sp := &fs.StorageParams{
 		Ctx:        ctx,
 		Dsn:        cfg.CFG.Database.URL,
-		AppName:    "ClientsMS::GetAddressTypes()",
+		AppName:    "ClientsMS::GetDeliveries()",
 		AutoCommit: true,
 		AutoClose:  true,
 	}
@@ -39,7 +39,7 @@ func GetAddressTypes(ctx context.Context, req *api.RequestAddressType) ([]*api.A
 	//Create query parameters
 	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
 	qp := &fs.QueryParams{
-		Dest:        &addrTypes,
+		Dest:        &deliveries,
 		QueryString: q,
 	}
 
@@ -60,33 +60,33 @@ func GetAddressTypes(ctx context.Context, req *api.RequestAddressType) ([]*api.A
 	}
 
 	//Check result
-	if len(addrTypes) > 0 {
-		lgr.LOG.Info("_RESULT_: ", addrTypes)
-		lgr.LOG.Info("<<-- ", "address_types.GetAddressTypes()")
-		return addrTypes, st.GetStatus(100)
+	if len(deliveries) > 0 {
+		lgr.LOG.Info("_RESULT_: ", deliveries)
+		lgr.LOG.Info("<<-- ", "deliveries.GetCountries()")
+		return deliveries, st.GetStatus(100)
 	}
 
 	lgr.LOG.Warn("_WARN_: ", st.GetStatus(301))
 	return nil, st.GetStatus(301)
 }
 
-// CreateAddressType - creates new address type
-func CreateAddressType(ctx context.Context, req *api.RequestAddressType) ([]*api.AddressType, st.ResponseStatus) {
+// CreateDelivery - creates new delivery
+func CreateDelivery(ctx context.Context, req *api.RequestDelivery) ([]*api.Delivery, st.ResponseStatus) {
 
-	lgr.LOG.Info("-->> ", "address_types.CreateAddressType()")
+	lgr.LOG.Info("-->> ", "deliveries.CreateDelivery()")
 
 	// Vars
 	var (
-		s         *fs.Storage
-		q         string
-		addrTypes []*api.AddressType
-		err       error
-		stat      st.ResponseStatus
+		s          *fs.Storage
+		q          string
+		deliveries []*api.Delivery
+		err        error
+		stat       st.ResponseStatus
 	)
 
 	//Check required fields
 	lgr.LOG.Info("_ACTION_: ", "checking required fields")
-	stat = CheckAndNormaliseRequiredFieldsAddressTypeInsert(req)
+	stat = CheckRequiredFieldsDeliveryInsert(req)
 	if stat.Code > 100 {
 		lgr.LOG.Warn("_WARN_: ", stat)
 		return nil, stat
@@ -94,7 +94,81 @@ func CreateAddressType(ctx context.Context, req *api.RequestAddressType) ([]*api
 
 	//Create query
 	lgr.LOG.Info("_ACTION_: ", "generating query")
-	q, stat = CreateQueryAddressTypeInsert()
+	q, stat = CreateQueryDeliveryInsert(req)
+	if stat.Code > 100 {
+		lgr.LOG.Warn("_WARN_: ", stat)
+		return nil, stat
+	}
+
+	//Create storage parameters
+	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
+	sp := &fs.StorageParams{
+		Ctx:        ctx,
+		Dsn:        cfg.CFG.Database.URL,
+		AppName:    "ClientsMS::CreateDelivery()",
+		AutoCommit: true,
+		AutoClose:  true,
+	}
+
+	//Create query parameters
+	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
+	qp := &fs.QueryParams{
+		Dest:        &deliveries,
+		QueryString: q,
+	}
+
+	//Open storage
+	lgr.LOG.Info("_ACTION_: ", "opening connection")
+	s, err = fs.NewStorage(sp)
+	if err != nil {
+		lgr.LOG.Error("_ERR_: ", err)
+		return nil, st.GetStatus(0, err.Error())
+	}
+
+	//Execute query
+	lgr.LOG.Info("_ACTION_: ", "running query")
+	err = s.RunQuery(qp)
+	if err != nil {
+		lgr.LOG.Error("_ERR_: ", err)
+		return nil, st.GetStatus(0, err.Error())
+	}
+
+	//Check result
+	if len(deliveries) > 0 {
+		lgr.LOG.Info("_RESULT_: ", deliveries)
+		lgr.LOG.Info("<<-- ", "deliveries.CreateDelivery()")
+		return deliveries, st.GetStatus(100)
+	}
+
+	lgr.LOG.Warn("_WARN_: ", st.GetStatus(301))
+	return nil, st.GetStatus(301)
+}
+
+// UpdateDelivery - updates delivery
+func UpdateDelivery(ctx context.Context, req *api.RequestDelivery) ([]*api.Delivery, st.ResponseStatus) {
+
+	lgr.LOG.Info("-->> ", "deliveries.UpdateDelivery()")
+
+	// Vars
+	var (
+		s          *fs.Storage
+		q          string
+		deliveries []*api.Delivery
+		err        error
+		stat       st.ResponseStatus
+	)
+
+	//Check required fields
+	lgr.LOG.Info("_ACTION_: ", "checking required fields")
+	stat = CheckRequiredFieldsDeliveryUpdate(req)
+	if stat.Code > 100 {
+		lgr.LOG.Warn("_WARN_: ", stat)
+		return nil, stat
+	}
+
+	//Create query
+	lgr.LOG.Info("_ACTION_: ", "generating query")
+	q, stat = CreateQueryDeliveryUpdate(req)
 	if stat.Code > 100 {
 		lgr.LOG.Warn("_WARN_: ", stat)
 		return nil, stat
@@ -105,7 +179,7 @@ func CreateAddressType(ctx context.Context, req *api.RequestAddressType) ([]*api
 	sp := &fs.StorageParams{
 		Ctx:        ctx,
 		Dsn:        cfg.CFG.Database.URL,
-		AppName:    "ClientsMS::CreateAddressType()",
+		AppName:    "ClientsMS::UpdateDelivery()",
 		AutoCommit: true,
 		AutoClose:  true,
 	}
@@ -113,82 +187,7 @@ func CreateAddressType(ctx context.Context, req *api.RequestAddressType) ([]*api
 	//Create query parameters
 	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
 	qp := &fs.QueryParams{
-		Dest:        &addrTypes,
-		QueryString: q,
-		Args:        []interface{}{req.Name, req.Code, req.Comment, req.AuthorId},
-	}
-
-	//Open storage
-	lgr.LOG.Info("_ACTION_: ", "opening connection")
-	s, err = fs.NewStorage(sp)
-	if err != nil {
-		lgr.LOG.Error("_ERR_: ", err)
-		return nil, st.GetStatus(0, err.Error())
-	}
-
-	//Execute query
-	lgr.LOG.Info("_ACTION_: ", "running query")
-	err = s.RunQuery(qp)
-	if err != nil {
-		lgr.LOG.Error("_ERR_: ", err)
-		return nil, st.GetStatus(0, err.Error())
-	}
-
-	//Check result
-	if len(addrTypes) > 0 {
-		lgr.LOG.Info("_RESULT_: ", addrTypes)
-		lgr.LOG.Info("<<-- ", "address_types.CreateAddressType()")
-		return addrTypes, st.GetStatus(100)
-	}
-
-	lgr.LOG.Warn("_WARN_: ", st.GetStatus(301))
-	return nil, st.GetStatus(301)
-}
-
-// UpdateAddressType - update address type
-func UpdateAddressType(ctx context.Context, req *api.RequestAddressType) ([]*api.AddressType, st.ResponseStatus) {
-
-	lgr.LOG.Info("-->> ", "address_types.UpdateAddressType()")
-
-	// Vars
-	var (
-		s         *fs.Storage
-		q         string
-		addrTypes []*api.AddressType
-		err       error
-		stat      st.ResponseStatus
-	)
-
-	//Check required fields
-	lgr.LOG.Info("_ACTION_: ", "checking required fields")
-	stat = CheckAndNormaliseRequiredFieldsAddressTypeUpdate(req)
-	if stat.Code > 100 {
-		lgr.LOG.Warn("_WARN_: ", stat)
-		return nil, stat
-	}
-
-	//Create query
-	lgr.LOG.Info("_ACTION_: ", "generating query")
-	q, stat = CreateQueryAddressTypeUpdate(req)
-	if stat.Code > 100 {
-		lgr.LOG.Warn("_WARN_: ", stat)
-		return nil, stat
-	}
-
-	//Create storage parameters
-	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
-	sp := &fs.StorageParams{
-		Ctx:        ctx,
-		Dsn:        cfg.CFG.Database.URL,
-		AppName:    "ClientsMS::UpdateAddressType()",
-		AutoCommit: true,
-		AutoClose:  true,
-	}
-
-	//Create query parameters
-	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
-	qp := &fs.QueryParams{
-		Dest:        &addrTypes,
+		Dest:        &deliveries,
 		QueryString: q,
 	}
 
@@ -209,32 +208,33 @@ func UpdateAddressType(ctx context.Context, req *api.RequestAddressType) ([]*api
 	}
 
 	//Check result
-	if len(addrTypes) > 0 {
-		lgr.LOG.Info("_RESULT_: ", addrTypes)
-		lgr.LOG.Info("<<-- ", "address_types.UpdateAddressType()")
-		return addrTypes, st.GetStatus(100)
+	if len(deliveries) > 0 {
+		lgr.LOG.Info("_RESULT_: ", deliveries)
+		lgr.LOG.Info("<<-- ", "deliveries.UpdateDelivery()")
+		return deliveries, st.GetStatus(100)
 	}
 
 	lgr.LOG.Warn("_WARN_: ", st.GetStatus(301))
 	return nil, st.GetStatus(301)
 }
 
-// UpdateAddressTypeDeletionFlags - mark/unmark addresses types as deleted in database
-func UpdateAddressTypeDeletionFlags(ctx context.Context, req *api.RequestAddressesTypesDeletionFlags) ([]*api.AddressType, st.ResponseStatus) {
-	lgr.LOG.Info("-->> ", "address_types.UpdateAddressTypeDeletionFlags()")
+// UpdateDeliveriesDeletionFlags - updates deletion flags
+func UpdateDeliveriesDeletionFlags(ctx context.Context, req *api.RequestDeliveriesDeletionFlags) ([]*api.Delivery, st.ResponseStatus) {
+
+	lgr.LOG.Info("-->> ", "deliveries.UpdateDeliveriesDeletionFlags()")
 
 	// Vars
 	var (
-		s         *fs.Storage
-		q         string
-		addrTypes []*api.AddressType
-		err       error
-		stat      st.ResponseStatus
+		s          *fs.Storage
+		q          string
+		deliveries []*api.Delivery
+		err        error
+		stat       st.ResponseStatus
 	)
 
 	//Check required fields
 	lgr.LOG.Info("_ACTION_: ", "checking required fields")
-	stat = CheckRequiredFieldsAddressesTypesDeletionFlagsUpdate(req)
+	stat = CheckRequiredFieldsDeliveriesDeletionFlagUpdate(req)
 	if stat.Code > 100 {
 		lgr.LOG.Warn("_WARN_: ", stat)
 		return nil, stat
@@ -242,14 +242,14 @@ func UpdateAddressTypeDeletionFlags(ctx context.Context, req *api.RequestAddress
 
 	//Create query
 	lgr.LOG.Info("_ACTION_: ", "generating query")
-	q = CreateQueryAddressesTypesDeletionFlagsUpdate(req)
+	q = CreateQueryDeliveriesDeletionFlagsUpdate(req)
 
 	//Create storage parameters
 	lgr.LOG.Info("_ACTION_: ", "creating storage parameters")
 	sp := &fs.StorageParams{
 		Ctx:        ctx,
 		Dsn:        cfg.CFG.Database.URL,
-		AppName:    "ClientsMS::UpdateAddressTypeDeletionFlags()",
+		AppName:    "ClientsMS::UpdateDeliveriesDeletionFlags()",
 		AutoCommit: true,
 		AutoClose:  true,
 	}
@@ -257,7 +257,7 @@ func UpdateAddressTypeDeletionFlags(ctx context.Context, req *api.RequestAddress
 	//Create query parameters
 	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
 	qp := &fs.QueryParams{
-		Dest:        &addrTypes,
+		Dest:        &deliveries,
 		QueryString: q,
 	}
 
@@ -278,10 +278,10 @@ func UpdateAddressTypeDeletionFlags(ctx context.Context, req *api.RequestAddress
 	}
 
 	//Check result
-	if len(addrTypes) > 0 {
-		lgr.LOG.Info("_RESULT_: ", addrTypes)
-		lgr.LOG.Info("<<-- ", "address_types.UpdateAddressType()")
-		return addrTypes, st.GetStatus(100)
+	if len(deliveries) > 0 {
+		lgr.LOG.Info("_RESULT_: ", deliveries)
+		lgr.LOG.Info("<<-- ", "deliveries.UpdateDeliveriesDeletionFlags()")
+		return deliveries, st.GetStatus(100)
 	}
 
 	lgr.LOG.Warn("_WARN_: ", st.GetStatus(301))

@@ -11,8 +11,7 @@ import (
 
 const (
 	// Templates for checking fields in request
-	//latDigOnly = "^[a-zA-Z0-9_]+$"
-	rusSpace = "^[а-яА-Я\\s]+$"
+	russianSymbolsWithSpaces = "^[а-яА-Я\\s]+$"
 )
 
 //**************************************************************
@@ -34,13 +33,13 @@ func CheckAndNormalizeRequiredFieldsCountryInsert(req *api.RequestCountry) st.Re
 
 	//CountryName
 	lgr.LOG.Info("_ACTION_: ", "checking CountryName")
-	if req.CountryName == "" {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " CountryName", " must contain a value"))
-		return st.GetStatus(401, " CountryName", " must contain a value")
+	if req.Name == "" {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Name", " must contain a value"))
+		return st.GetStatus(401, " Name", " must contain a value")
 	}
 
 	lgr.LOG.Info("_ACTION_: ", "normalize CountryName")
-	req.CountryName, stat = st.NormalizeStringByTemplate(req.CountryName, rusSpace, true)
+	req.Name, stat = st.NormalizeStringByTemplate(req.Name, russianSymbolsWithSpaces, true)
 	if stat.Code > 100 {
 		lgr.LOG.Warn("_WARN_: ", stat)
 		return stat
@@ -63,25 +62,25 @@ func CheckAndNormalizeRequiredFieldsCountryUpdate(req *api.RequestCountry) st.Re
 
 	//CountryId
 	lgr.LOG.Info("_ACTION_: ", "checking CountryId")
-	if req.CountryId == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " CountryId", "must contain a value"))
-		return st.GetStatus(401, " CountryId", "must contain a value")
+	if req.Id == 0 {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Id", "must contain a value"))
+		return st.GetStatus(401, " Id", "must contain a value")
 	}
 
 	//CountryName || CountryComment
-	if req.CountryIsDeleted == api.ClientsMS_Bool_IS_ANY {
+	if req.IsDeleted == api.ClientsMS_Bool_IS_ANY {
 		lgr.LOG.Info("_ACTION_: ", "checking CountryName or comment")
-		if req.CountryName == "" && req.CountryComment == "" {
-			lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " CountryName || CountryComment", "must contain a value"))
-			return st.GetStatus(401, " CountryName || CountryComment", "must contain a value")
+		if req.Name == "" && req.Comment == "" {
+			lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Name || Comment", "must contain a value"))
+			return st.GetStatus(401, " Name || Comment", "must contain a value")
 		}
 	}
 
 	//Normalize CountryName
 	var stat st.ResponseStatus
-	if req.CountryName != "" {
+	if req.Name != "" {
 		lgr.LOG.Info("_ACTION_: ", "normalize CountryName")
-		req.CountryName, stat = st.NormalizeStringByTemplate(req.CountryName, rusSpace, true)
+		req.Name, stat = st.NormalizeStringByTemplate(req.Name, russianSymbolsWithSpaces, true)
 		if stat.Code > 100 {
 			lgr.LOG.Warn("_WARN_: ", stat)
 			return stat
@@ -112,9 +111,9 @@ func CheckRequiredFieldsCountriesDeletionFlagUpdate(req *api.RequestCountriesDel
 
 	//CountryId
 	lgr.LOG.Info("_ACTION_: ", "checking CountryId")
-	if len(req.CountryId) == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " CountryId", " must contain a value"))
-		return st.GetStatus(401, " CountryId", " must contain a value")
+	if len(req.Ids) == 0 {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Ids", " must contain a value"))
+		return st.GetStatus(401, " Ids", " must contain a value")
 	}
 
 	lgr.LOG.Info("<<-- ", "countries.CheckRequiredFieldsCountriesDeletionFlagUpdate()")
@@ -128,7 +127,7 @@ func CheckRequiredFieldsCountriesDeletionFlagUpdate(req *api.RequestCountriesDel
 // createQueryCountriesSelect - returns query to SELECT
 func createQueryCountriesSelect() string {
 	lgr.LOG.Info("-->> ", "countries.CreateQueryCountriesSelect()")
-	q := fmt.Sprintf("SELECT %s FROM countries", createViewCountries())
+	q := fmt.Sprintf("SELECT %s FROM countries_ref", createViewCountries())
 	lgr.LOG.Info("_QUERY_: ", q)
 	lgr.LOG.Info("<<-- ", "countries.CreateQueryCountriesSelect()")
 	return q
@@ -138,8 +137,7 @@ func createQueryCountriesSelect() string {
 func CreateQueryCountryInsert(req *api.RequestCountry) (string, st.ResponseStatus) {
 	lgr.LOG.Info("-->> ", "countries.CreateQueryCountryInsert()")
 
-	q := `INSERT INTO countries (name, comment, created_by)
-        	VALUES ($1, $2, $3) RETURNING `
+	q := fmt.Sprintf("INSERT INTO countries_ref (name, comment, created_by)	VALUES ('%s', '%s', %d) RETURNING ", req.Name, req.Comment, req.AuthorId)
 
 	q += createViewCountries()
 
@@ -156,20 +154,20 @@ func CreateQueryCountryUpdate(req *api.RequestCountry) (string, st.ResponseStatu
 	sValues := ""
 	cnt := 0
 
-	if req.CountryName != "" {
+	if req.Name != "" {
 		sFields += "name, "
-		sValues += fmt.Sprintf("'%s', ", req.CountryName)
+		sValues += fmt.Sprintf("'%s', ", req.Name)
 		cnt++
 	}
-	if req.CountryComment != "" {
+	if req.Comment != "" {
 		sFields += "comment, "
-		sValues += fmt.Sprintf("'%s', ", req.CountryComment)
+		sValues += fmt.Sprintf("'%s', ", req.Comment)
 		cnt++
 	}
 	// Is deleted
-	if req.CountryIsDeleted == api.ClientsMS_Bool_IS_TRUE || req.CountryIsDeleted == api.ClientsMS_Bool_IS_FALSE {
+	if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE || req.IsDeleted == api.ClientsMS_Bool_IS_FALSE {
 		sFields += "isdeleted, "
-		if req.CountryIsDeleted == api.ClientsMS_Bool_IS_TRUE {
+		if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE {
 			sValues += fmt.Sprintf("%t, ", true)
 		} else {
 			sValues += fmt.Sprintf("%t, ", false)
@@ -182,12 +180,12 @@ func CreateQueryCountryUpdate(req *api.RequestCountry) (string, st.ResponseStatu
 
 	q := ""
 	if cnt > 1 {
-		q = "UPDATE countries SET (" + sFields + ") = (" + sValues + ")"
+		q = "UPDATE countries_ref SET (" + sFields + ") = (" + sValues + ")"
 	} else {
-		q = "UPDATE countries SET " + sFields + " = " + sValues
+		q = "UPDATE countries_ref SET " + sFields + " = " + sValues
 	}
 
-	q += fmt.Sprintf(" WHERE id = %d RETURNING ", req.CountryId)
+	q += fmt.Sprintf(" WHERE id = %d RETURNING ", req.Id)
 	q += createViewCountries()
 
 	lgr.LOG.Info("_QUERY_: ", q)
@@ -199,8 +197,8 @@ func CreateQueryCountryUpdate(req *api.RequestCountry) (string, st.ResponseStatu
 // CreateQueryCountriesDeletionFlagsUpdate - returns query to UPDATE countries deletion flags
 func CreateQueryCountriesDeletionFlagsUpdate(req *api.RequestCountriesDeletionFlags) string {
 	lgr.LOG.Info("-->> ", "CreateQueryCountriesDeletionFlagsUpdate()")
-	q := fmt.Sprintf("UPDATE countries SET isdeleted = %t, changed_by = %d WHERE id IN %s RETURNING ",
-		hlp.GetBool(req.IsDeleted), req.AuthorId, hlp.Uint64ArrayToString(req.CountryId))
+	q := fmt.Sprintf("UPDATE countries_ref SET isdeleted = %t, updated_by = %d WHERE id IN %s RETURNING ",
+		hlp.GetBool(req.IsDeleted), req.AuthorId, hlp.Uint64ArrayToString(req.Ids))
 	q += createViewCountries()
 	lgr.LOG.Info("_QUERY_: ", q)
 	lgr.LOG.Info("<<-- ", "CreateQueryCountriesDeletionFlagsUpdate()")
@@ -214,12 +212,12 @@ func createViewCountries() string {
 	return `id AS country_id,
     			name AS country_name,
     			concat(comment, '') AS country_comment,
-    			to_char(created, 'YYYY-MM-DD HH24:MI:SS'::text) AS country_created,
+    			to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'::text) AS country_created_at,
     			created_by AS country_created_by,
-                ( SELECT u.fullname FROM users u WHERE u.id = created_by ) AS country_created_by_name,
-    			to_char(changed, 'YYYY-MM-DD HH24:MI:SS'::text) AS country_changed,
-    			changed_by AS country_changed_by,
-    			( SELECT u.fullname FROM users u WHERE u.id = changed_by ) AS country_changed_by_name,
+                ( SELECT u.fullname FROM users_ref u WHERE u.id = created_by ) AS country_created_by_name,
+    			to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS'::text) AS country_updated_at,
+    			updated_by AS country_updated_by,
+    			( SELECT u.fullname FROM users_ref u WHERE u.id = updated_by ) AS country_updated_by_name,
     			isdeleted AS country_isdeleted`
 }
 
@@ -233,33 +231,33 @@ func addWhereToQueryCountriesSelect(q string, req *api.RequestCountry) string {
 	cnt := 0
 
 	// ID
-	if req.CountryId != 0 {
-		q += fmt.Sprintf(" WHERE country_id = %d", req.CountryId)
+	if req.Id != 0 {
+		q += fmt.Sprintf(" WHERE country_id = %d", req.Id)
 		cnt++
 	}
 
 	// NAME
-	if req.CountryName != "" {
+	if req.Name != "" {
 		if cnt > 0 {
-			q += " AND country_name ILIKE '%" + req.CountryName + "%'"
+			q += " AND country_name ILIKE '%" + req.Name + "%'"
 		} else {
-			q += " WHERE country_name ILIKE '%" + req.CountryName + "%'"
+			q += " WHERE country_name ILIKE '%" + req.Name + "%'"
 		}
 		cnt++
 	}
 	// COMMENT
-	if req.CountryComment != "" {
+	if req.Comment != "" {
 		if cnt > 0 {
-			q += " AND country_comment ILIKE '%" + req.CountryComment + "%'"
+			q += " AND country_comment ILIKE '%" + req.Comment + "%'"
 		} else {
-			q += " WHERE country_comment ILIKE '%" + req.CountryComment + "%'"
+			q += " WHERE country_comment ILIKE '%" + req.Comment + "%'"
 		}
 		cnt++
 	}
 
 	// Isdeleted
 
-	switch req.CountryIsDeleted {
+	switch req.IsDeleted {
 	case api.ClientsMS_Bool_IS_TRUE:
 		if cnt > 0 {
 			q += " AND country_isdeleted = true"
@@ -291,21 +289,21 @@ func addOrderToQueryCountriesSelect(q string, req *api.RequestCountry) string {
 	lgr.LOG.Info("-->> ", "countries.AddOrderToQueryCountriesSelect()")
 
 	strOrder := ""
-	switch req.CountryOrder {
+	switch req.Order {
 	case api.ClientsMS_CountryOrder_BY_COUNTRY_ID:
 		strOrder = " ORDER BY country_id"
 	case api.ClientsMS_CountryOrder_BY_COUNTRY_NAME:
 		strOrder = " ORDER BY country_name"
-	case api.ClientsMS_CountryOrder_BY_COUNTRY_CREATED:
+	case api.ClientsMS_CountryOrder_BY_COUNTRY_CREATED_AT:
 		strOrder = " ORDER BY country_created"
-	case api.ClientsMS_CountryOrder_BY_COUNTRY_CHANGED:
+	case api.ClientsMS_CountryOrder_BY_COUNTRY_UPDATED_AT:
 		strOrder = " ORDER BY country_changed"
 	default:
 		strOrder = " ORDER BY country_id"
 	}
 
 	strDirection := ""
-	switch req.CountryOrderType {
+	switch req.OrderType {
 	case api.ClientsMS_OrderType_ASC:
 		strDirection = " ASC"
 	case api.ClientsMS_OrderType_DESC:
@@ -343,17 +341,4 @@ func GenQueryCountriesSelect(req *api.RequestCountry) string {
 	lgr.LOG.Info("_QUERY_: ", q)
 	lgr.LOG.Info("<<-- ", "countries.GenQueryCountriesSelect()")
 	return q
-}
-
-//**************************************************************
-// Converting a request to slice of interfaces
-//**************************************************************
-
-// ConvertToInterfaceSlice - converting a request to slice of interfaces
-func ConvertToInterfaceSlice(req *api.RequestCountriesDeletionFlags) [][]interface{} {
-	var result [][]interface{}
-	for _, countryId := range req.CountryId {
-		result = append(result, []interface{}{countryId, req.IsDeleted, req.AuthorId})
-	}
-	return result
 }

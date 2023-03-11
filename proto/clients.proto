@@ -30,17 +30,25 @@ enum ClientsMS_OrderType {
 enum ClientsMS_CountryOrder {
   BY_COUNTRY_ID = 0;
   BY_COUNTRY_NAME = 1;
-  BY_COUNTRY_CREATED = 2;
-  BY_COUNTRY_CHANGED = 3;
+  BY_COUNTRY_CREATED_AT = 2;
+  BY_COUNTRY_UPDATED_AT = 3;
 }
 
 //Address type
 enum ClientsMS_AddressTypesOrder {
-  BY_ADDR_TYPE_ID = 0;
-  BY_ADDR_TYPE_NAME = 1;
-  BY_ADDR_TYPE_CODE = 2;
-  BY_ADDR_TYPE_CREATED = 3;
-  BY_ADDR_TYPE_CHANGED = 4;
+  BY_ADDRESS_TYPE_ID = 0;
+  BY_ADDRESS_TYPE_NAME = 1;
+  BY_ADDRESS_TYPE_CODE = 2;
+  BY_ADDRESS_TYPE_CREATED_AT = 3;
+  BY_ADDRESS_TYPE_UPDATED_AT = 4;
+}
+
+//Deliveries
+enum ClientsMS_DeliveriesOrder {
+  BY_DELIVERY_ID = 0;
+  BY_DELIVERY_NAME = 1;
+  BY_DELIVERY_CREATED_AT = 2;
+  BY_DELIVERY_UPDATED_AT = 3;
 }
 
 //***********************************************************************
@@ -57,8 +65,15 @@ service ClientsServices {
   // Address types
   rpc GetAddressesTypes(RequestAddressType) returns (ResponseAddressesTypes) {} //pass
   rpc CreateAddressType(RequestAddressType) returns (ResponseAddressesTypes) {} //pass
-  rpc UpdateAddressType(RequestAddressType) returns (ResponseAddressesTypes) {} //
-  rpc UpdateAddressTypeDeletionFlags(RequestAddressesTypesDeletionFlags) returns (ResponseAddressesTypes) {} //
+  rpc UpdateAddressType(RequestAddressType) returns (ResponseAddressesTypes) {} //pass
+  rpc UpdateAddressTypeDeletionFlags(RequestAddressesTypesDeletionFlags) returns (ResponseAddressesTypes) {} //pass
+
+  // Deliveries
+  rpc GetDeliveries(RequestDelivery) returns (ResponseDeliveries) {} //pass
+  rpc CreateDelivery(RequestDelivery) returns (ResponseDeliveries) {} //pass
+  rpc UpdateDelivery(RequestDelivery) returns (ResponseDeliveries) {} //pass
+  rpc UpdateDeliveriesDeletionFlags(RequestDeliveriesDeletionFlags) returns (ResponseDeliveries) {} //pass
+
 }
 
 
@@ -71,13 +86,13 @@ service ClientsServices {
 // =============== //
 message RequestCountry {
   string AuthToken = 1;
-  fixed64 CountryId = 2;
-  string CountryName = 3;
-  string CountryComment = 4;
-  ClientsMS_Bool CountryIsDeleted = 5;
+  fixed64 Id = 2;
+  string Name = 3;
+  string Comment = 4;
+  ClientsMS_Bool IsDeleted = 5;
   //Order in query
-  ClientsMS_CountryOrder CountryOrder = 6;
-  ClientsMS_OrderType CountryOrderType = 7;
+  ClientsMS_CountryOrder Order = 6;
+  ClientsMS_OrderType OrderType = 7;
   //AuthorId needed to create and update
   fixed64 AuthorId = 8;
 }
@@ -85,7 +100,7 @@ message RequestCountriesDeletionFlags {
   string AuthToken = 1;
   fixed64 AuthorId = 2;
   ClientsMS_Bool IsDeleted = 3;
-  repeated fixed64 CountryId = 4;
+  repeated fixed64 Ids = 4;
 }
 
 
@@ -94,23 +109,45 @@ message RequestCountriesDeletionFlags {
 // =============== //
 message RequestAddressType {
   string AuthToken = 1;
-  fixed64 AddrTypeID = 2;
-  string AddrTypeCode = 3;
-  string AddrTypeName = 4;
-  string AddrTypeComment = 5;
-  ClientsMS_Bool AddrTypeNeedsCleaning = 6;
-  ClientsMS_Bool AddrTypeNeedsNormalizing = 7;
-  ClientsMS_Bool AddrTypeIsDeleted = 8;
+  fixed64 Id = 2;
+  string Code = 3;
+  string Name = 4;
+  string Comment = 5;
+  ClientsMS_Bool NeedsCleaning = 6;
+  ClientsMS_Bool NeedsNormalizing = 7;
+  ClientsMS_Bool IsDeleted = 8;
   fixed64 AuthorId = 9;
-  ClientsMS_AddressTypesOrder AddressTypesOrder = 10;
-  ClientsMS_OrderType AddressTypesOrderType = 11;
+  ClientsMS_AddressTypesOrder Order = 10;
+  ClientsMS_OrderType OrderType = 11;
 }
 message RequestAddressesTypesDeletionFlags {
   string AuthToken = 1;
   fixed64 AuthorId = 2;
-  ClientsMS_Bool AddrTypeIsDeleted = 3;
-  repeated fixed64 AddrTypeID = 4;
+  ClientsMS_Bool IsDeleted = 3;
+  repeated fixed64 Ids = 4;
 }
+
+// =============== //
+//   Deliveries     //
+// =============== //
+message RequestDelivery {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  fixed64 Id = 3;
+  string Name = 4;
+  string Comment = 5;
+  ClientsMS_Bool IsDeleted = 6;
+  ClientsMS_DeliveriesOrder Order = 7;
+  ClientsMS_OrderType OrderType = 8;
+}
+message RequestDeliveriesDeletionFlags {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  ClientsMS_Bool IsDeleted = 3;
+  repeated fixed64 Ids = 4;
+}
+
+
 //***********************************************************************
 // Responses
 //***********************************************************************
@@ -128,25 +165,25 @@ message ClientsMS_Status {
 // =============== //
 message Country {
   // @gotags: db:"country_id"
-  fixed64 CountryId = 1;
+  fixed64 Id = 1;
   // @gotags: db:"country_name"
-  string CountryName = 2;
+  string Name = 2;
   // @gotags: db:"country_comment"
   string Comment = 3;
-  // @gotags: db:"country_created"
-  string CountryCreated = 4;
+  // @gotags: db:"country_created_at"
+  string CreatedAt = 4;
   // @gotags: db:"country_created_by"
-  fixed64 CountryCreatedBy = 5;
+  fixed64 CreatedBy = 5;
   // @gotags: db:"country_created_by_name"
-  string CountryCreatedByName = 6;
-  // @gotags: db:"country_changed"
-  string CountryChanged = 7;
-  // @gotags: db:"country_changed_by"
-  fixed64 CountryChangedBy = 8;
-  // @gotags: db:"country_changed_by_name"
-  string CountryChangedByName = 9;
+  string CreatedByName = 6;
+  // @gotags: db:"country_updated_at"
+  string UpdatedAt = 7;
+  // @gotags: db:"country_updated_by"
+  fixed64 UpdatedBy = 8;
+  // @gotags: db:"country_updated_by_name"
+  string UpdatedByName = 9;
   // @gotags: db:"country_isdeleted"
-  bool CountryIsDeleted = 10;
+  bool IsDeleted = 10;
 }
 message ResponseCountries {
   repeated Country Countries = 1;
@@ -158,33 +195,63 @@ message ResponseCountries {
 // =============== //
 message AddressType {
   // @gotags: db:"address_type_id"
-  fixed64 AddrTypeId = 1;
+  fixed64 Id = 1;
   // @gotags: db:"address_type_name"
-  string AddrTypeName = 2;
+  string Name = 2;
   // @gotags: db:"address_type_code"
-  string AddrTypeCode = 3;
+  string Code = 3;
   // @gotags: db:"address_type_comment"
-  string AddrTypeComment = 4;
+  string Comment = 4;
   // @gotags: db:"address_type_needs_normalizing"
-  bool AddrTypeNeedsNormalizing = 5;
+  bool NeedsNormalizing = 5;
   // @gotags: db:"address_type_needs_cleaning"
-  bool AddrTypeNeedsCleaning = 6;
+  bool NeedsCleaning = 6;
   // @gotags: db:"address_type_isdeleted"
-  bool AddrTypeIsDeleted = 7;
-  // @gotags: db:"address_type_created"
-  string AddrTypeCreated = 8;
+  bool IsDeleted = 7;
+  // @gotags: db:"address_type_created_at"
+  string CreatedAt = 8;
   // @gotags: db:"address_type_created_by"
-  fixed64 AddrTypeCreatedBy = 9;
+  fixed64 CreatedBy = 9;
   // @gotags: db:"address_type_created_by_name"
-  string AddrTypeCreatedByName = 10;
-  // @gotags: db:"address_type_changed"
-  string AddrTypeChanged = 11;
-  // @gotags: db:"address_type_changed_by"
-  fixed64 AddrTypeChangedBy = 12;
-  // @gotags: db:"address_type_changed_by_name"
-  string AddrTypeChangedByName = 13;
+  string CreatedByName = 10;
+  // @gotags: db:"address_type_updated_at"
+  string UpdatedAt = 11;
+  // @gotags: db:"address_type_updated_by"
+  fixed64 UpdatedBy = 12;
+  // @gotags: db:"address_type_updated_by_name"
+  string UpdatedByName = 13;
 }
 message ResponseAddressesTypes {
   repeated AddressType AddressesTypes = 1;
+  ClientsMS_Status Status = 2;
+}
+
+// =============== //
+//   Deliveries     //
+// =============== //
+message Delivery {
+  // @gotags: db:"delivery_id"
+  fixed64 Id = 1;
+  // @gotags: db:"delivery_name"
+  string Name = 2;
+  // @gotags: db:"delivery_comment"
+  string Comment = 3;
+  // @gotags: db:"delivery_created_at"
+  string CreatedAt = 4;
+  // @gotags: db:"delivery_created_by"
+  fixed64 CreatedBy = 5;
+  // @gotags: db:"delivery_created_by_name"
+  string CreatedByName = 6;
+  // @gotags: db:"delivery_updated_at"
+  string UpdatedAt = 7;
+  // @gotags: db:"delivery_updated_by"
+  fixed64 UpdatedBy = 8;
+  // @gotags: db:"delivery_updated_by_name"
+  string UpdatedByName = 9;
+  // @gotags: db:"delivery_isdeleted"
+  bool IsDeleted = 10;
+}
+message ResponseDeliveries {
+  repeated Delivery Deliveries = 1;
   ClientsMS_Status Status = 2;
 }

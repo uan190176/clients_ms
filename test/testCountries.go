@@ -27,10 +27,10 @@ func main() {
 	}
 
 	//Countries
-	res, err := testGetCountries(conn) //pass
+	//res, err := testGetCountries(conn) //pass
 	//res, err := testCreateCountry(conn) //pass
 	//res, err := testUpdateCountry(conn) //pass
-	//res, err := testUpdateDelFlagCountry(conn) //pass
+	res, err := testUpdateDelFlagCountry(conn) //pass
 
 	fmt.Println(res, err)
 }
@@ -52,8 +52,8 @@ func testCreateCountry(conn *grpc.ClientConn) (*api.ResponseCountries, error) {
 	c := api.NewClientsServicesClient(conn)
 
 	res, err := c.CreateCountry(context.Background(), &api.RequestCountry{
-		AuthToken:   cliToken,
-		CountryName: "Russia",
+		AuthToken: cliToken,
+		Name:      "РФ",
 		//CountryComment: "need deleted",
 		AuthorId: 7,
 	})
@@ -65,11 +65,11 @@ func testUpdateCountry(conn *grpc.ClientConn) (*api.ResponseCountries, error) {
 
 	res, err := c.UpdateCountry(context.Background(), &api.RequestCountry{
 		AuthToken: cliToken,
-		CountryId: 26,
+		Id:        31,
 		//CountryName: "Россия",
 		//CountryComment: "need deleted",
-		AuthorId:         7,
-		CountryIsDeleted: api.ClientsMS_Bool_IS_TRUE,
+		AuthorId:  7,
+		IsDeleted: api.ClientsMS_Bool_IS_TRUE,
 	})
 	return res, err
 }
@@ -81,7 +81,7 @@ func testUpdateDelFlagCountry(conn *grpc.ClientConn) (*api.ResponseCountries, er
 	a = append(a, 20)
 	res, err := c.UpdateCountriesDeletionFlags(context.Background(), &api.RequestCountriesDeletionFlags{
 		AuthToken: cliToken,
-		CountryId: []uint64{20, 22, 24},
+		Ids:       []uint64{20, 22, 24, 31},
 		AuthorId:  7,
 		IsDeleted: api.ClientsMS_Bool_IS_TRUE,
 	})

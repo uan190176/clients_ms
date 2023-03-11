@@ -32,6 +32,11 @@ type ClientsServicesClient interface {
 	CreateAddressType(ctx context.Context, in *RequestAddressType, opts ...grpc.CallOption) (*ResponseAddressesTypes, error)
 	UpdateAddressType(ctx context.Context, in *RequestAddressType, opts ...grpc.CallOption) (*ResponseAddressesTypes, error)
 	UpdateAddressTypeDeletionFlags(ctx context.Context, in *RequestAddressesTypesDeletionFlags, opts ...grpc.CallOption) (*ResponseAddressesTypes, error)
+	// Deliveries
+	GetDeliveries(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error)
+	CreateDelivery(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error)
+	UpdateDelivery(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error)
+	UpdateDeliveriesDeletionFlags(ctx context.Context, in *RequestDeliveriesDeletionFlags, opts ...grpc.CallOption) (*ResponseDeliveries, error)
 }
 
 type clientsServicesClient struct {
@@ -114,6 +119,42 @@ func (c *clientsServicesClient) UpdateAddressTypeDeletionFlags(ctx context.Conte
 	return out, nil
 }
 
+func (c *clientsServicesClient) GetDeliveries(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error) {
+	out := new(ResponseDeliveries)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/GetDeliveries", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) CreateDelivery(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error) {
+	out := new(ResponseDeliveries)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/CreateDelivery", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateDelivery(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error) {
+	out := new(ResponseDeliveries)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateDelivery", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateDeliveriesDeletionFlags(ctx context.Context, in *RequestDeliveriesDeletionFlags, opts ...grpc.CallOption) (*ResponseDeliveries, error) {
+	out := new(ResponseDeliveries)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateDeliveriesDeletionFlags", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClientsServicesServer is the server API for ClientsServices service.
 // All implementations must embed UnimplementedClientsServicesServer
 // for forward compatibility
@@ -128,6 +169,11 @@ type ClientsServicesServer interface {
 	CreateAddressType(context.Context, *RequestAddressType) (*ResponseAddressesTypes, error)
 	UpdateAddressType(context.Context, *RequestAddressType) (*ResponseAddressesTypes, error)
 	UpdateAddressTypeDeletionFlags(context.Context, *RequestAddressesTypesDeletionFlags) (*ResponseAddressesTypes, error)
+	// Deliveries
+	GetDeliveries(context.Context, *RequestDelivery) (*ResponseDeliveries, error)
+	CreateDelivery(context.Context, *RequestDelivery) (*ResponseDeliveries, error)
+	UpdateDelivery(context.Context, *RequestDelivery) (*ResponseDeliveries, error)
+	UpdateDeliveriesDeletionFlags(context.Context, *RequestDeliveriesDeletionFlags) (*ResponseDeliveries, error)
 	mustEmbedUnimplementedClientsServicesServer()
 }
 
@@ -158,6 +204,18 @@ func (UnimplementedClientsServicesServer) UpdateAddressType(context.Context, *Re
 }
 func (UnimplementedClientsServicesServer) UpdateAddressTypeDeletionFlags(context.Context, *RequestAddressesTypesDeletionFlags) (*ResponseAddressesTypes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAddressTypeDeletionFlags not implemented")
+}
+func (UnimplementedClientsServicesServer) GetDeliveries(context.Context, *RequestDelivery) (*ResponseDeliveries, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeliveries not implemented")
+}
+func (UnimplementedClientsServicesServer) CreateDelivery(context.Context, *RequestDelivery) (*ResponseDeliveries, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDelivery not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateDelivery(context.Context, *RequestDelivery) (*ResponseDeliveries, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDelivery not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateDeliveriesDeletionFlags(context.Context, *RequestDeliveriesDeletionFlags) (*ResponseDeliveries, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeliveriesDeletionFlags not implemented")
 }
 func (UnimplementedClientsServicesServer) mustEmbedUnimplementedClientsServicesServer() {}
 
@@ -316,6 +374,78 @@ func _ClientsServices_UpdateAddressTypeDeletionFlags_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClientsServices_GetDeliveries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDelivery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).GetDeliveries(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/GetDeliveries",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).GetDeliveries(ctx, req.(*RequestDelivery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_CreateDelivery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDelivery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).CreateDelivery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/CreateDelivery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).CreateDelivery(ctx, req.(*RequestDelivery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateDelivery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDelivery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateDelivery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateDelivery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateDelivery(ctx, req.(*RequestDelivery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateDeliveriesDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDeliveriesDeletionFlags)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateDeliveriesDeletionFlags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateDeliveriesDeletionFlags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateDeliveriesDeletionFlags(ctx, req.(*RequestDeliveriesDeletionFlags))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClientsServices_ServiceDesc is the grpc.ServiceDesc for ClientsServices service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -354,6 +484,22 @@ var ClientsServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateAddressTypeDeletionFlags",
 			Handler:    _ClientsServices_UpdateAddressTypeDeletionFlags_Handler,
+		},
+		{
+			MethodName: "GetDeliveries",
+			Handler:    _ClientsServices_GetDeliveries_Handler,
+		},
+		{
+			MethodName: "CreateDelivery",
+			Handler:    _ClientsServices_CreateDelivery_Handler,
+		},
+		{
+			MethodName: "UpdateDelivery",
+			Handler:    _ClientsServices_UpdateDelivery_Handler,
+		},
+		{
+			MethodName: "UpdateDeliveriesDeletionFlags",
+			Handler:    _ClientsServices_UpdateDeliveriesDeletionFlags_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

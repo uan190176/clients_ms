@@ -10,28 +10,28 @@ import (
 func PingDatabase(ctx context.Context) bool {
 
 	// Create config to connect
-	qConf := &fs.QueryParams{
+	sp := &fs.StorageParams{
 		Ctx:     ctx,
 		Dsn:     cnf.CFG.Database.URL,
 		AppName: "ClientsMS::Ping()",
 	}
 
 	// Open connection to database
-	c, err := fs.NewStorage(qConf)
+	c, err := fs.NewStorage(sp)
 	if err != nil {
 		return false
 	}
 
 	err = c.Ping(ctx)
 	if err != nil {
-		e := c.Release(qConf)
+		e := c.Release()
 		if e != nil {
 			return false
 		}
 		return false
 	}
 
-	e := c.Release(qConf)
+	e := c.Release()
 	if e != nil {
 		return false
 	}

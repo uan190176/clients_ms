@@ -11,7 +11,7 @@ import (
 )
 
 // GetUserAccessRightForTable - check and return uar to table
-func GetUserAccessRightForTable(ctx context.Context, req *api.RequestUARforTable) (bool, st.ResponseStatus) {
+func GetUserAccessRightForTable(ctx context.Context, req *api.RequestUsersAccessRightsForTable) (bool, st.ResponseStatus) {
 
 	lgr.LOG.Info("-->> ", "helpers.GetUserAccessRightForTable()")
 
@@ -22,7 +22,14 @@ func GetUserAccessRightForTable(ctx context.Context, req *api.RequestUARforTable
 		lgr.LOG.Error("_ERR_: ", err)
 		return false, st.GetStatus(0, err.Error())
 	}
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) error {
+		err = conn.Close()
+		if err != nil {
+			lgr.LOG.Error("_ERR_: ", err)
+			return err
+		}
+		return nil
+	}(conn)
 
 	c := api.NewUsersServicesClient(conn)
 
@@ -46,7 +53,7 @@ func GetUserAccessRightForTable(ctx context.Context, req *api.RequestUARforTable
 		}
 	}
 
-	lgr.LOG.Info("_RESULT_: ", res.UAR)
+	lgr.LOG.Info("_RESULT_: ", res.UsersAccessRightsForTable)
 	lgr.LOG.Info("<<-- ", "helpers.GetUserAccessRightForTable()")
-	return res.UAR.Result, st.GetStatus(100)
+	return res.UsersAccessRightsForTable.Result, st.GetStatus(100)
 }

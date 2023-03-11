@@ -26,20 +26,26 @@ func GetCountries(ctx context.Context, req *api.RequestCountry) ([]*api.Country,
 	lgr.LOG.Info("_ACTION_: ", "generate query")
 	q = GenQueryCountriesSelect(req)
 
+	//Create storage parameters
+	lgr.LOG.Info("_ACTION_: ", "creating storage parameters")
+	sp := &fs.StorageParams{
+		Ctx:        ctx,
+		Dsn:        cfg.CFG.Database.URL,
+		AppName:    "ClientsMS::GetCountries()",
+		AutoCommit: true,
+		AutoClose:  true,
+	}
+
 	//Create query parameters
 	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
 	qp := &fs.QueryParams{
-		Ctx:         ctx,
-		Dsn:         cfg.CFG.Database.URL,
-		AppName:     "ClientsMS::GetCountries()",
 		Dest:        &countries,
 		QueryString: q,
-		AutoClose:   true,
 	}
 
 	//Open storage
 	lgr.LOG.Info("_ACTION_: ", "opening connection")
-	s, err = fs.NewStorage(qp)
+	s, err = fs.NewStorage(sp)
 	if err != nil {
 		lgr.LOG.Error("_ERR_: ", err)
 		return nil, st.GetStatus(0, err.Error())
@@ -94,20 +100,26 @@ func CreateCountry(ctx context.Context, req *api.RequestCountry) ([]*api.Country
 		return nil, stat
 	}
 
+	//Create storage parameters
+	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
+	sp := &fs.StorageParams{
+		Ctx:        ctx,
+		Dsn:        cfg.CFG.Database.URL,
+		AppName:    "ClientsMS::CreateCountry()",
+		AutoCommit: true,
+		AutoClose:  true,
+	}
+
 	//Create query parameters
 	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
 	qp := &fs.QueryParams{
-		Ctx:         ctx,
-		Dsn:         cfg.CFG.Database.URL,
-		AppName:     "ClientsMS::CreateCountry()",
 		Dest:        &countries,
 		QueryString: q,
-		AutoClose:   true,
 	}
 
 	//Open storage
 	lgr.LOG.Info("_ACTION_: ", "opening connection")
-	s, err = fs.NewStorage(qp)
+	s, err = fs.NewStorage(sp)
 	if err != nil {
 		lgr.LOG.Error("_ERR_: ", err)
 		return nil, st.GetStatus(0, err.Error())
@@ -132,7 +144,7 @@ func CreateCountry(ctx context.Context, req *api.RequestCountry) ([]*api.Country
 	return nil, st.GetStatus(301)
 }
 
-// UpdateCountry - creates new country
+// UpdateCountry - updates country
 func UpdateCountry(ctx context.Context, req *api.RequestCountry) ([]*api.Country, st.ResponseStatus) {
 
 	lgr.LOG.Info("-->> ", "countries.UpdateCountry()")
@@ -162,20 +174,26 @@ func UpdateCountry(ctx context.Context, req *api.RequestCountry) ([]*api.Country
 		return nil, stat
 	}
 
+	//Create storage parameters
+	lgr.LOG.Info("_ACTION_: ", "creating storage parameters")
+	sp := &fs.StorageParams{
+		Ctx:        ctx,
+		Dsn:        cfg.CFG.Database.URL,
+		AppName:    "ClientsMS::UpdateCountry()",
+		AutoCommit: true,
+		AutoClose:  true,
+	}
+
 	//Create query parameters
 	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
 	qp := &fs.QueryParams{
-		Ctx:         ctx,
-		Dsn:         cfg.CFG.Database.URL,
-		AppName:     "ClientsMS::UpdateCountry()",
 		Dest:        &countries,
 		QueryString: q,
-		AutoClose:   true,
 	}
 
 	//Open storage
 	lgr.LOG.Info("_ACTION_: ", "opening connection")
-	s, err = fs.NewStorage(qp)
+	s, err = fs.NewStorage(sp)
 	if err != nil {
 		lgr.LOG.Error("_ERR_: ", err)
 		return nil, st.GetStatus(0, err.Error())
@@ -200,7 +218,7 @@ func UpdateCountry(ctx context.Context, req *api.RequestCountry) ([]*api.Country
 	return nil, st.GetStatus(301)
 }
 
-// UpdateCountriesDeletionFlags - creates new country
+// UpdateCountriesDeletionFlags - updates countries deletion flags
 func UpdateCountriesDeletionFlags(ctx context.Context, req *api.RequestCountriesDeletionFlags) ([]*api.Country, st.ResponseStatus) {
 
 	lgr.LOG.Info("-->> ", "countries.UpdateCountriesDeletionFlags()")
@@ -226,20 +244,26 @@ func UpdateCountriesDeletionFlags(ctx context.Context, req *api.RequestCountries
 	lgr.LOG.Info("_ACTION_: ", "generating query")
 	q = CreateQueryCountriesDeletionFlagsUpdate(req)
 
+	//Create storage parameters
+	lgr.LOG.Info("_ACTION_: ", "creating storage parameters")
+	sp := &fs.StorageParams{
+		Ctx:        ctx,
+		Dsn:        cfg.CFG.Database.URL,
+		AppName:    "ClientsMS::UpdateCountriesDeletionFlags()",
+		AutoCommit: true,
+		AutoClose:  true,
+	}
+
 	//Create query parameters
 	lgr.LOG.Info("_ACTION_: ", "creating query parameters")
 	qp := &fs.QueryParams{
-		Ctx:         ctx,
-		Dsn:         cfg.CFG.Database.URL,
-		AppName:     "ClientsMS::UpdateCountriesDeletionFlags()",
 		Dest:        &countries,
 		QueryString: q,
-		AutoClose:   true,
 	}
 
 	//Open storage
 	lgr.LOG.Info("_ACTION_: ", "opening connection")
-	s, err = fs.NewStorage(qp)
+	s, err = fs.NewStorage(sp)
 	if err != nil {
 		lgr.LOG.Error("_ERR_: ", err)
 		return nil, st.GetStatus(0, err.Error())

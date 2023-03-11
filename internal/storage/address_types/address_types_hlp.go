@@ -11,8 +11,8 @@ import (
 
 const (
 	// Templates for checking fields in request
-	latDigOnly = "^[a-zA-Z0-9_]+$"
-	rusSpace   = "^[а-яА-Я\\s]+$"
+	latinSymbolsWithDigits   = "^[a-zA-Z0-9_]+$"
+	russianSymbolsWithSpaces = "^[а-яА-Я\\s]+$"
 )
 
 //**************************************************************
@@ -28,32 +28,32 @@ func CheckAndNormaliseRequiredFieldsAddressTypeInsert(req *api.RequestAddressTyp
 	//AuthorId
 	lgr.LOG.Info("_ACTION_: ", "checking address type author id")
 	if req.AuthorId == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AuthorId", "must contain a value"))
-		return st.GetStatus(401, "AuthorId", "must contain a value")
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " AuthorId", "must contain a value"))
+		return st.GetStatus(401, " AuthorId", "must contain a value")
 	}
 
 	// AddrTypeName
 	lgr.LOG.Info("_ACTION_: ", "checking address type name")
-	if req.AddrTypeName == "" {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AddrTypeName", "must contain a value"))
-		return st.GetStatus(401, "AddrTypeName", "must contain a value")
+	if req.Name == "" {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Name", "must contain a value"))
+		return st.GetStatus(401, " Name", "must contain a value")
 	}
 
 	lgr.LOG.Info("_ACTION_: ", "normalize address type name")
-	req.AddrTypeName, stat = st.NormalizeStringByTemplate(req.AddrTypeName, rusSpace, true)
+	req.Name, stat = st.NormalizeStringByTemplate(req.Name, russianSymbolsWithSpaces, true)
 	if stat.Code > 100 {
 		lgr.LOG.Warn("_WARN_: ", stat)
 		return stat
 	}
 
 	// AddrTypeCode
-	if req.AddrTypeCode == "" {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AddrTypeCode", "must contain a value"))
-		return st.GetStatus(401, "AddrTypeCode", "must contain a value")
+	if req.Code == "" {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "Code", "must contain a value"))
+		return st.GetStatus(401, "Code", "must contain a value")
 	}
 
 	lgr.LOG.Info("_ACTION_: ", "normalize address type code")
-	req.AddrTypeCode, stat = st.NormalizeStringByTemplate(req.AddrTypeCode, latDigOnly, true, true)
+	req.Code, stat = st.NormalizeStringByTemplate(req.Code, latinSymbolsWithDigits, true, true)
 	if stat.Code > 100 {
 		lgr.LOG.Warn("_WARN_: ", stat)
 		return stat
@@ -72,25 +72,25 @@ func CheckAndNormaliseRequiredFieldsAddressTypeUpdate(req *api.RequestAddressTyp
 
 	//AddrTypeId
 	lgr.LOG.Info("_ACTION_: ", "checking address type id")
-	if req.AddrTypeID == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AddrTypeID", "must contain a value"))
-		return st.GetStatus(401, "AddrTypeID", "must contain a value")
+	if req.Id == 0 {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Id", "must contain a value"))
+		return st.GetStatus(401, " Id", "must contain a value")
 	}
 
 	//AuthorId
 	lgr.LOG.Info("_ACTION_: ", "checking address type author id")
 	if req.AuthorId == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AuthorId", "must contain a value"))
-		return st.GetStatus(401, "AuthorId", "must contain a value")
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " AuthorId", "must contain a value"))
+		return st.GetStatus(401, " AuthorId", "must contain a value")
 	}
 
-	if req.AddrTypeIsDeleted == api.ClientsMS_Bool_IS_ANY && req.AddrTypeNeedsNormalizing == api.ClientsMS_Bool_IS_ANY && req.AddrTypeNeedsCleaning == api.ClientsMS_Bool_IS_ANY {
+	if req.IsDeleted == api.ClientsMS_Bool_IS_ANY && req.NeedsNormalizing == api.ClientsMS_Bool_IS_ANY && req.NeedsCleaning == api.ClientsMS_Bool_IS_ANY {
 
 		// AddrTypeName
 		lgr.LOG.Info("_ACTION_: ", "checking address type name")
-		if req.AddrTypeName != "" {
+		if req.Name != "" {
 			lgr.LOG.Info("_ACTION_: ", "normalize address type name")
-			req.AddrTypeName, stat = st.NormalizeStringByTemplate(req.AddrTypeName, rusSpace, true)
+			req.Name, stat = st.NormalizeStringByTemplate(req.Name, russianSymbolsWithSpaces, true)
 			if stat.Code > 100 {
 				lgr.LOG.Warn("_WARN_: ", stat)
 				return stat
@@ -99,9 +99,9 @@ func CheckAndNormaliseRequiredFieldsAddressTypeUpdate(req *api.RequestAddressTyp
 		}
 
 		// AddrTypeCode
-		if req.AddrTypeCode != "" {
+		if req.Code != "" {
 			lgr.LOG.Info("_ACTION_: ", "normalize address type code")
-			req.AddrTypeCode, stat = st.NormalizeStringByTemplate(req.AddrTypeCode, latDigOnly, true, true)
+			req.Code, stat = st.NormalizeStringByTemplate(req.Code, latinSymbolsWithDigits, true, true)
 			if stat.Code > 100 {
 				lgr.LOG.Warn("_WARN_: ", stat)
 				return stat
@@ -110,7 +110,7 @@ func CheckAndNormaliseRequiredFieldsAddressTypeUpdate(req *api.RequestAddressTyp
 		}
 
 		// AddrTypeComment
-		if req.AddrTypeComment != "" {
+		if req.Comment != "" {
 			cnt++
 		}
 
@@ -130,23 +130,23 @@ func CheckRequiredFieldsAddressesTypesDeletionFlagsUpdate(req *api.RequestAddres
 	lgr.LOG.Info("-->> ", "address_types.CheckRequiredFieldsAddressesTypesDeletionFlagsUpdate()")
 
 	//IDs
-	if len(req.AddrTypeID) == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AddrTypeID", "must contain array of IDs"))
-		return st.GetStatus(401, "AddrTypeID", "must contain array of IDs")
+	if len(req.Ids) == 0 {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Id", "must contain array of IDs"))
+		return st.GetStatus(401, " Id", "must contain array of IDs")
 	}
 
 	//AuthorId
 	lgr.LOG.Info("_ACTION_: ", "checking address type author id")
 	if req.AuthorId == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AuthorId", "must contain a value"))
-		return st.GetStatus(401, "AuthorId", "must contain a value")
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " AuthorId", "must contain a value"))
+		return st.GetStatus(401, " AuthorId", "must contain a value")
 	}
 
 	//Isdeleted
 	lgr.LOG.Info("_ACTION_: ", "checking address type isdeleted")
-	if req.AddrTypeIsDeleted == api.ClientsMS_Bool_IS_ANY {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, "AddrTypeIsDeleted", "must contain a value true or false"))
-		return st.GetStatus(401, "AuthorId", "must contain a value true or false")
+	if req.IsDeleted == api.ClientsMS_Bool_IS_ANY {
+		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " IsDeleted", "must contain a value true or false"))
+		return st.GetStatus(401, " IsDeleted", "must contain a value true or false")
 	}
 	lgr.LOG.Info("<<-- ", "address_types.CheckRequiredFieldsAddressesTypesDeletionFlagsUpdate()")
 	return st.GetStatus(100)
@@ -159,20 +159,20 @@ func CheckRequiredFieldsAddressesTypesDeletionFlagsUpdate(req *api.RequestAddres
 // createQueryAddressesTypesSelect - returns query to SELECT
 func createQueryAddressesTypesSelect() string {
 	lgr.LOG.Info("-->> ", "address_types.CreateQueryAddressesTypesSelect()")
-	q := fmt.Sprintf("SELECT %s FROM addresses_types", createViewAddressesTypes())
+	q := fmt.Sprintf("SELECT %s FROM addresses_types_ref", createViewAddressesTypes())
 	lgr.LOG.Info("_QUERY_: ", q)
 	lgr.LOG.Info("<<-- ", "address_types.CreateQueryAddressesTypesSelect()")
 	return q
 }
 
 // CreateQueryAddressTypeInsert - returns query to INSERT
-func CreateQueryAddressTypeInsert(req *api.RequestAddressType) (string, st.ResponseStatus) {
+func CreateQueryAddressTypeInsert() (string, st.ResponseStatus) {
 	lgr.LOG.Info("-->> ", "address_types.CreateQueryAddressTypeInsert()")
 
 	//q := fmt.Sprintf("INSERT INTO addresses_types (name, code, comment, created_by)"+
 	//	" VALUES ('%s', '%s', '%s', %d) RETURNING id", req.AddrTypeName, req.AddrTypeCode, req.AddrTypeComment, req.AuthorId)
 
-	q := `INSERT INTO addresses_types (name, code, comment, created_by)
+	q := `INSERT INTO addresses_types_ref (name, code, comment, created_by)
         VALUES ($1, $2, $3, $4) RETURNING `
 	q += createViewAddressesTypes()
 
@@ -189,28 +189,28 @@ func CreateQueryAddressTypeUpdate(req *api.RequestAddressType) (string, st.Respo
 	sValues := ""
 	cnt := 0
 
-	if req.AddrTypeName != "" {
+	if req.Name != "" {
 		sFields += "name, "
-		sValues += fmt.Sprintf("'%s', ", req.AddrTypeName)
+		sValues += fmt.Sprintf("'%s', ", req.Name)
 		cnt++
 	}
 
-	if req.AddrTypeCode != "" {
+	if req.Code != "" {
 		sFields += "code, "
-		sValues += fmt.Sprintf("'%s', ", req.AddrTypeCode)
+		sValues += fmt.Sprintf("'%s', ", req.Code)
 		cnt++
 	}
 
-	if req.AddrTypeComment != "" {
+	if req.Comment != "" {
 		sFields += "comment, "
-		sValues += fmt.Sprintf("'%s', ", req.AddrTypeComment)
+		sValues += fmt.Sprintf("'%s', ", req.Comment)
 		cnt++
 	}
 
 	// Is deleted
-	if req.AddrTypeIsDeleted == api.ClientsMS_Bool_IS_TRUE || req.AddrTypeIsDeleted == api.ClientsMS_Bool_IS_FALSE {
+	if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE || req.IsDeleted == api.ClientsMS_Bool_IS_FALSE {
 		sFields += "isdeleted, "
-		if req.AddrTypeIsDeleted == api.ClientsMS_Bool_IS_TRUE {
+		if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE {
 			sValues += fmt.Sprintf("%t, ", true)
 		} else {
 			sValues += fmt.Sprintf("%t, ", false)
@@ -219,9 +219,9 @@ func CreateQueryAddressTypeUpdate(req *api.RequestAddressType) (string, st.Respo
 	}
 
 	// Needs normalizing
-	if req.AddrTypeNeedsNormalizing == api.ClientsMS_Bool_IS_TRUE || req.AddrTypeNeedsNormalizing == api.ClientsMS_Bool_IS_FALSE {
+	if req.NeedsNormalizing == api.ClientsMS_Bool_IS_TRUE || req.NeedsNormalizing == api.ClientsMS_Bool_IS_FALSE {
 		sFields += "needs_normalizing, "
-		if req.AddrTypeNeedsNormalizing == api.ClientsMS_Bool_IS_TRUE {
+		if req.NeedsNormalizing == api.ClientsMS_Bool_IS_TRUE {
 			sValues += fmt.Sprintf("%t, ", true)
 		} else {
 			sValues += fmt.Sprintf("%t, ", false)
@@ -230,9 +230,9 @@ func CreateQueryAddressTypeUpdate(req *api.RequestAddressType) (string, st.Respo
 	}
 
 	// Needs cleaning
-	if req.AddrTypeNeedsCleaning == api.ClientsMS_Bool_IS_TRUE || req.AddrTypeNeedsCleaning == api.ClientsMS_Bool_IS_FALSE {
+	if req.NeedsCleaning == api.ClientsMS_Bool_IS_TRUE || req.NeedsCleaning == api.ClientsMS_Bool_IS_FALSE {
 		sFields += "needs_cleaning, "
-		if req.AddrTypeNeedsCleaning == api.ClientsMS_Bool_IS_TRUE {
+		if req.NeedsCleaning == api.ClientsMS_Bool_IS_TRUE {
 			sValues += fmt.Sprintf("%t, ", true)
 		} else {
 			sValues += fmt.Sprintf("%t, ", false)
@@ -245,12 +245,12 @@ func CreateQueryAddressTypeUpdate(req *api.RequestAddressType) (string, st.Respo
 
 	q := ""
 	if cnt > 1 {
-		q = "UPDATE addresses_types SET (" + sFields + ") = (" + sValues + ")"
+		q = "UPDATE addresses_types_ref SET (" + sFields + ") = (" + sValues + ")"
 	} else {
-		q = "UPDATE addresses_types SET " + sFields + " = " + sValues
+		q = "UPDATE addresses_types_ref SET " + sFields + " = " + sValues
 	}
 
-	q += fmt.Sprintf(" WHERE id = %v RETURNING ", req.AddrTypeID)
+	q += fmt.Sprintf(" WHERE id = %v RETURNING ", req.Id)
 	q += createViewAddressesTypes()
 
 	lgr.LOG.Info("_QUERY_: ", q)
@@ -262,8 +262,8 @@ func CreateQueryAddressTypeUpdate(req *api.RequestAddressType) (string, st.Respo
 // CreateQueryAddressesTypesDeletionFlagsUpdate - returns query to DELETE
 func CreateQueryAddressesTypesDeletionFlagsUpdate(req *api.RequestAddressesTypesDeletionFlags) string {
 	lgr.LOG.Info("-->> ", "CreateQueryAddressesTypesDeletionFlagsUpdate()")
-	q := fmt.Sprintf("UPDATE addresses_types SET isdeleted = %t, changed_by = %d WHERE id IN %s RETURNING ",
-		hlp.GetBool(req.AddrTypeIsDeleted), req.AuthorId, hlp.Uint64ArrayToString(req.AddrTypeID))
+	q := fmt.Sprintf("UPDATE addresses_types_ref SET isdeleted = %t, updated_by = %d WHERE id IN %s RETURNING ",
+		hlp.GetBool(req.IsDeleted), req.AuthorId, hlp.Uint64ArrayToString(req.Ids))
 	q += createViewAddressesTypes()
 	lgr.LOG.Info("_QUERY_: ", q)
 	lgr.LOG.Info("<<-- ", "CreateQueryAddressesTypesDeletionFlagsUpdate()")
@@ -282,12 +282,12 @@ func createViewAddressesTypes() string {
     		concat(comment, '') AS address_type_comment,
     		needs_normalizing AS address_type_needs_normalizing,
     		needs_cleaning AS address_type_needs_cleaning,
-    		to_char(created, 'YYYY-MM-DD HH24:MI:SS'::text) AS address_type_created,
+    		to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'::text) AS address_type_created_at,
     		created_by AS address_type_created_by,
-			( SELECT u.fullname FROM users u WHERE u.id = created_by ) AS address_type_created_by_name,
-    		to_char(changed, 'YYYY-MM-DD HH24:MI:SS'::text) AS address_type_changed,
-    		changed_by AS address_type_changed_by,
-    		( SELECT u.fullname FROM users u WHERE u.id = changed_by ) AS address_type_changed_by_name,
+			( SELECT u.fullname FROM users_ref u WHERE u.id = created_by ) AS address_type_created_by_name,
+    		to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS'::text) AS address_type_updated_at,
+    		updated_by AS address_type_updated_by,
+    		( SELECT u.fullname FROM users_ref u WHERE u.id = updated_by ) AS address_type_updated_by_name,
 			isdeleted AS address_type_isdeleted`
 }
 
@@ -301,50 +301,50 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	cnt := 0
 
 	// ID
-	if req.AddrTypeID != 0 {
-		q += fmt.Sprintf(" WHERE address_type_id IN (%v)", req.AddrTypeID)
+	if req.Id != 0 {
+		q += fmt.Sprintf(" WHERE address_type_id IN (%v)", req.Id)
 		cnt++
 	}
 
 	// CODE
-	if req.AddrTypeCode != "" {
+	if req.Code != "" {
 		if cnt > 0 {
-			q += " AND address_type_code ILIKE '%" + req.AddrTypeCode + "%'"
+			q += " AND address_type_code ILIKE '%" + req.Code + "%'"
 		} else {
-			q += " WHERE address_type_code ILIKE '%" + req.AddrTypeCode + "%'"
+			q += " WHERE address_type_code ILIKE '%" + req.Code + "%'"
 		}
 		cnt++
 	}
 
 	// NAME
-	if req.AddrTypeName != "" {
+	if req.Name != "" {
 		if cnt > 0 {
-			q += " AND address_type_name ILIKE '%" + req.AddrTypeName + "%'"
+			q += " AND address_type_name ILIKE '%" + req.Name + "%'"
 		} else {
-			q += " WHERE address_type_name ILIKE '%" + req.AddrTypeName + "%'"
+			q += " WHERE address_type_name ILIKE '%" + req.Name + "%'"
 		}
 		cnt++
 	}
 
 	// COMMENT
-	if req.AddrTypeComment != "" {
+	if req.Comment != "" {
 		if cnt > 0 {
-			q += " AND address_type_comment ILIKE '%" + req.AddrTypeComment + "%'"
+			q += " AND address_type_comment ILIKE '%" + req.Comment + "%'"
 		} else {
-			q += " WHERE address_type_comment ILIKE '%" + req.AddrTypeComment + "%'"
+			q += " WHERE address_type_comment ILIKE '%" + req.Comment + "%'"
 		}
 		cnt++
 	}
 
 	// Normalising
-	if req.AddrTypeNeedsNormalizing == api.ClientsMS_Bool_IS_TRUE {
+	if req.NeedsNormalizing == api.ClientsMS_Bool_IS_TRUE {
 		if cnt > 0 {
 			q += " AND address_type_needs_normalizing = true"
 		} else {
 			q += " WHERE address_type_needs_normalizing = true"
 		}
 		cnt++
-	} else if req.AddrTypeNeedsNormalizing == api.ClientsMS_Bool_IS_FALSE {
+	} else if req.NeedsNormalizing == api.ClientsMS_Bool_IS_FALSE {
 		if cnt > 0 {
 			q += " AND address_type_needs_normalizing = false"
 		} else {
@@ -354,14 +354,14 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	}
 
 	// DaData cleaning
-	if req.AddrTypeNeedsCleaning == api.ClientsMS_Bool_IS_TRUE {
+	if req.NeedsCleaning == api.ClientsMS_Bool_IS_TRUE {
 		if cnt > 0 {
 			q += " AND address_type_needs_cleaning = true"
 		} else {
 			q += " WHERE address_type_needs_cleaning = true"
 		}
 		cnt++
-	} else if req.AddrTypeNeedsCleaning == api.ClientsMS_Bool_IS_FALSE {
+	} else if req.NeedsCleaning == api.ClientsMS_Bool_IS_FALSE {
 		if cnt > 0 {
 			q += " AND address_type_needs_cleaning = false"
 		} else {
@@ -371,14 +371,14 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	}
 
 	// Isdeleted
-	if req.AddrTypeIsDeleted == api.ClientsMS_Bool_IS_TRUE {
+	if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE {
 		if cnt > 0 {
 			q += " AND address_type_isdeleted = true"
 		} else {
 			q += " WHERE address_type_isdeleted = true"
 		}
 		cnt++
-	} else if req.AddrTypeIsDeleted == api.ClientsMS_Bool_IS_FALSE {
+	} else if req.IsDeleted == api.ClientsMS_Bool_IS_FALSE {
 		if cnt > 0 {
 			q += " AND address_type_isdeleted = false"
 		} else {
@@ -400,23 +400,23 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 func addOrderToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) string {
 	lgr.LOG.Info("-->> ", "address_types.AddOrderToQuerySelectAddressesTypes()")
 	strOrder := ""
-	switch req.AddressTypesOrder {
-	case api.ClientsMS_AddressTypesOrder_BY_ADDR_TYPE_ID:
+	switch req.Order {
+	case api.ClientsMS_AddressTypesOrder_BY_ADDRESS_TYPE_ID:
 		strOrder = " ORDER BY address_type_id"
-	case api.ClientsMS_AddressTypesOrder_BY_ADDR_TYPE_NAME:
+	case api.ClientsMS_AddressTypesOrder_BY_ADDRESS_TYPE_NAME:
 		strOrder = " ORDER BY address_type_name"
-	case api.ClientsMS_AddressTypesOrder_BY_ADDR_TYPE_CODE:
+	case api.ClientsMS_AddressTypesOrder_BY_ADDRESS_TYPE_CODE:
 		strOrder = " ORDER BY address_type_code"
-	case api.ClientsMS_AddressTypesOrder_BY_ADDR_TYPE_CREATED:
+	case api.ClientsMS_AddressTypesOrder_BY_ADDRESS_TYPE_CREATED_AT:
 		strOrder = " ORDER BY address_type_created"
-	case api.ClientsMS_AddressTypesOrder_BY_ADDR_TYPE_CHANGED:
+	case api.ClientsMS_AddressTypesOrder_BY_ADDRESS_TYPE_UPDATED_AT:
 		strOrder = " ORDER BY address_type_changed"
 	default:
 		strOrder = " ORDER BY address_type_id"
 	}
 
 	strDirection := ""
-	switch req.AddressTypesOrderType {
+	switch req.OrderType {
 	case api.ClientsMS_OrderType_ASC:
 		strDirection = " ASC"
 	case api.ClientsMS_OrderType_DESC:

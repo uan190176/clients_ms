@@ -1,0 +1,443 @@
+syntax = "proto3";
+option go_package = "internal/api";
+package usr;
+
+
+//***********************************************************************
+// Enums
+//***********************************************************************
+
+// ============== //
+// Boolean fields //
+// ============== //
+
+enum UsersMS_Bool {
+  IS_ANY = 0;
+  IS_FALSE = 1;
+  IS_TRUE = 2;
+}
+
+// =============== //
+//      Orders     //
+// =============== //
+
+// Users
+enum UsersMS_UsersOrder {
+  BY_USER_ID = 0;
+  BY_USER_NAME = 1;
+  BY_USER_LOGIN = 2;
+  BY_USER_DATE_CREATION = 3;
+}
+
+// Users history
+enum UsersMS_UsersHistoryOrder {
+  BY_USERS_HISTORY_ID = 0;
+  BY_USERS_HISTORY_USER_ID = 1;
+  BY_USERS_HISTORY_CREATED_AT = 2;
+}
+
+// Users roles
+enum UsersMS_UsersRolesOrder {
+  BY_USER_ROLE_ID = 0;
+  BY_USER_ROLE_NAME = 1;
+}
+
+// Users access rights
+enum UsersMS_UsersAccessRightsOrder {
+  BY_USERS_ACCESS_RIGHTS_ID = 0;
+  BY_USERS_ACCESS_RIGHTS_ROLE_ID = 1;
+  BY_USERS_ACCESS_RIGHTS_TABLE_NAME = 2;
+  BY_USERS_ACCESS_RIGHTS_CREATED_AT = 3;
+  BY_USERS_ACCESS_RIGHTS_UPDATED_AT = 4;
+}
+
+//Order type for all entities
+enum UsersMS_OrderType {
+  ASC = 0;
+  DESC = 1;
+}
+
+// =============== //
+//      Tables     //
+// =============== //
+enum RelKind {
+  ONLY_TABLES = 0;
+  ONLY_VIEWS = 1;
+  TABLES_AND_VIEWS = 2;
+}
+
+// =============================== //
+//  Users access rights for Tables //
+// =============================== //
+enum UsersAccessRights_Actions {
+  CAN_SELECT = 0;
+  CAN_INSERT = 1;
+  CAN_UPDATE = 2;
+  CAN_DELETE = 3;
+  CAN_AUTH = 4;
+}
+
+//***********************************************************************
+// SERVICES
+//***********************************************************************
+service UsersServices {
+  //Users
+  rpc AuthUser(RequestUser) returns (ResponseUsers) {} //pass
+  rpc GetUsers(RequestUser) returns (ResponseUsers) {} //pass
+  rpc CreateUser(RequestUser) returns (ResponseUsers) {} //pass
+  rpc UpdateUser(RequestUser) returns (ResponseUsers) {} //pass
+  rpc UpdateUsersDeletionFlags(RequestDeletionFlags) returns (ResponseUsers) {} //pass
+
+  //Users history
+  rpc GetUsersHistory(RequestUsersHistory) returns (ResponseUsersHistory) {} //pass
+  rpc DeleteUsersHistory(RequestUsersHistory) returns (ResponseUsersHistory) {} //pass - physical delete records
+
+  //Roles
+  rpc GetUsersRoles(RequestUsersRoles) returns (ResponseUsersRoles) {} //pass
+  rpc CreateUserRole(RequestUsersRoles) returns (ResponseUsersRoles) {} //pass
+  rpc UpdateUserRole(RequestUsersRoles) returns (ResponseUsersRoles) {} //pass
+  rpc UpdateUsersRolesDeletionFlags(RequestDeletionFlags) returns (ResponseUsersRoles) {} //pass
+  rpc UpdateUsersRolesWithUsersAccessRightsDeletionFlags(RequestDeletionFlags) returns (ResponseUsersRolesWithUar) {} //
+
+  //Tables
+  rpc GetTables(RequestTables) returns (ResponseTables) {} //pass
+
+  //User access rights (uar in funcs)
+  rpc GetUsersAccessRights(RequestUsersAccessRights) returns (ResponseUsersAccessRights) {} //pass
+  rpc CreateUsersAccessRights(RequestUsersAccessRightsMultiple) returns (ResponseUsersAccessRights) {} //pass
+  rpc UpdateUsersAccessRights(RequestUsersAccessRightsMultiple) returns (ResponseUsersAccessRights) {} //pass
+  rpc UpdateUsersAccessRightsDeletionFlags(RequestDeletionFlags) returns (ResponseUsersAccessRights) {} //pass
+
+  //Uses in all microservices to getting users access rights for current table before doing action with table
+  rpc GetUserAccessRightForTable(RequestUsersAccessRightsForTable) returns (ResponseUsersAccessRightsForTable) {} //pass
+}
+
+
+//***********************************************************************
+// Requests
+//***********************************************************************
+
+// =============== //
+// DeletionFlags   //
+// =============== //
+message RequestDeletionFlags{
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  UsersMS_Bool IsDeleted = 3;
+  repeated fixed64 Ids = 4;
+}
+
+// =============== //
+//   Users         //
+// =============== //
+message RequestUser {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  fixed64 Id = 3;
+  string FirstName = 4;
+  string MiddleName = 5;
+  string LastName = 6;
+  string Login = 7;
+  string Password = 8;
+  string Phone = 9;
+  string PhoneInternal = 10;
+  string Comment = 11;
+  fixed64 RoleId = 12;
+  string FullName = 13;
+  UsersMS_Bool IsDeleted = 14;
+  UsersMS_UsersOrder UsersOrder = 15;
+  UsersMS_OrderType UsersOrderType = 16;
+}
+
+
+// =============== //
+//   Users history //
+// =============== //
+message RequestUsersHistory {
+  string AuthToken = 1;
+  fixed64 Id = 2;
+  fixed64 UserId = 3;
+  fixed64 AuthorId = 4;
+  UsersMS_UsersHistoryOrder Order = 5;
+  UsersMS_OrderType OrderType = 6;
+}
+
+// =============== //
+//   Users roles   //
+// =============== //
+message RequestUsersRoles {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  fixed64 Id = 3;
+  string Name = 4;
+  string Comment = 5;
+  UsersMS_Bool RoleIsDeleted = 6;
+  UsersMS_UsersRolesOrder Order = 7;
+  UsersMS_OrderType OrderType = 8;
+}
+
+// =============== //
+// Tables names    //
+// =============== //
+message RequestTables {
+  string AuthToken = 1;
+  RelKind RelKind = 2;
+}
+
+// =================== //
+// Users access rights //
+// =================== //
+message RequestUsersAccessRights {
+  string AuthToken = 1;
+  fixed64 Id = 2;
+  fixed64 RoleId = 3;
+  string TableName = 4;
+  bool CanSelect = 5;
+  bool CanInsert = 6;
+  bool CanUpdate = 7;
+  bool CanDelete = 8;
+  fixed64 AuthorId = 9;
+  UsersMS_Bool IsDeleted = 10;
+  UsersMS_UsersAccessRightsOrder Order = 11;
+  UsersMS_OrderType OrderType = 12;
+}
+
+message UsersAccessRightsMultiple {
+  fixed64 Id = 1;
+  fixed64 RoleId = 2;
+  string TableName = 3;
+  bool CanSelect = 4;
+  bool CanInsert = 5;
+  bool CanUpdate = 6;
+  bool CanDelete = 7;
+  bool Isdeleted = 8;
+  fixed64 AuthorId = 9;
+}
+message RequestUsersAccessRightsMultiple {
+  string AuthToken = 1;
+  repeated UsersAccessRightsMultiple UsersAccessRights = 3;
+}
+
+// =================== //
+// UAR for tables      //
+// =================== //
+message RequestUsersAccessRightsForTable {
+  string AuthToken = 1;
+  fixed64 UserId = 2;
+  string TableName = 3;
+  UsersAccessRights_Actions Action = 4;
+}
+
+//***********************************************************************
+// Responses
+//***********************************************************************
+
+// =============== //
+//   Status        //
+// =============== //
+message UsersMS_Status {
+  int32 Code = 1;
+  string Description = 2;
+}
+
+// =============== //
+//   Users         //
+// =============== //
+message User {
+  // @gotags: db:"user_id"
+  fixed64 ID = 1;
+  // @gotags: db:"user_firstname"
+  string FirstName = 2;
+  // @gotags: db:"user_middlename"
+  string MiddleName = 3;
+  // @gotags: db:"user_lastname"
+  string LastName = 4;
+  // @gotags: db:"user_fullname"
+  string FullName = 5;
+  // @gotags: db:"user_login"
+  string Login = 6;
+  // @gotags: db:"user_password"
+  string Password = 7;
+  // @gotags: db:"user_phone"
+  string Phone = 8;
+  // @gotags: db:"user_phone_internal"
+  string PhoneInternal = 9;
+  // @gotags: db:"user_comment"
+  string Comment = 10;
+  // @gotags: db:"user_isdeleted"
+  bool IsDeleted = 11;
+  // @gotags: db:"user_created_at"
+  string CreatedAt = 12;
+  // @gotags: db:"user_created_by"
+  fixed64 CreatedBy = 13;
+  // @gotags: db:"user_created_by_name"
+  string CreatedByName = 14;
+  // @gotags: db:"user_updated_at"
+  string UpdatedAt = 15;
+  // @gotags: db:"user_updated_by"
+  fixed64 UpdatedBy = 16;
+  // @gotags: db:"user_updated_by_name"
+  string UpdatedByName = 17;
+  // @gotags: db:"user_role_id"
+  fixed64 RoleId = 18;
+  // @gotags: db:"user_role_name"
+  string RoleName = 19;
+}
+message ResponseUsers {
+  repeated User Users = 1;
+  UsersMS_Status Status = 2;
+}
+
+// =============== //
+//   Users history //
+// =============== //
+message UsersHistory {
+  // @gotags: db:"user_history_id"
+  fixed64 UserHistoryId = 1;
+  // @gotags: db:"user_history_firstname"
+  string FirstName = 2;
+  // @gotags: db:"user_history_middlename"
+  string MiddleName = 3;
+  // @gotags: db:"user_history_lastname"
+  string LastName = 4;
+  // @gotags: db:"user_history_login"
+  string Login = 5;
+  // @gotags: db:"user_history_password"
+  string Password = 6;
+  // @gotags: db:"user_history_isdeleted"
+  bool IsDeleted = 7;
+  // @gotags: db:"user_history_fullname"
+  string FullName = 8;
+  // @gotags: db:"user_history_created_at"
+  string CreatedAt = 9;
+  // @gotags: db:"user_history_created_by_name"
+  string CreatedByName = 10;
+  // @gotags: db:"user_history_created_by"
+  fixed64 CreatedBy = 11;
+  // @gotags: db:"user_history_phone"
+  string Phone = 14;
+  // @gotags: db:"user_history_phone_internal"
+  string PhoneInternal = 15;
+  // @gotags: db:"user_history_comment"
+  string Comment = 16;
+  // @gotags: db:"user_history_role_id"
+  fixed64 RoleId = 17;
+  // @gotags: db:"user_history_role_name"
+  string RoleName = 18;
+  // @gotags: db:"user_history_user_id"
+  fixed64 UserId = 19;
+}
+message ResponseUsersHistory {
+  repeated UsersHistory History = 1;
+  UsersMS_Status Status = 2;
+}
+
+// =============== //
+//   Users roles   //
+// =============== //
+message UserRole {
+  // @gotags: db:"user_role_id"
+  fixed64 UserRoleId = 1;
+  // @gotags: db:"user_role_name"
+  string UserRoleName = 2;
+  // @gotags: db:"user_role_comment"
+  string UserRoleComment = 3;
+  // @gotags: db:"user_role_created_at"
+  string UserRoleCreatedAt = 4;
+  // @gotags: db:"user_role_created_by"
+  fixed64 UserRoleCreatedBy = 5;
+  // @gotags: db:"user_role_created_by_name"
+  string UserRoleCreatedByName = 6;
+  // @gotags: db:"user_role_updated_at"
+  string UserRoleUpdatedAt = 7;
+  // @gotags: db:"user_role_updated_by"
+  fixed64 UserRoleUpdatedBy = 8;
+  // @gotags: db:"user_role_updated_by_name"
+  string UserRoleUpdatedByName = 9;
+  // @gotags: db:"user_role_isdeleted"
+  bool UserRoleIsDeleted = 10;
+}
+message ResponseUsersRoles {
+  repeated UserRole UsersRoles = 1;
+  UsersMS_Status Status = 2;
+}
+message ResponseUsersRolesWithUar {
+  repeated UserRole UserRole = 1;
+  repeated UsersAccessRights UsersAccessRights = 2;
+  UsersMS_Status Status = 3;
+}
+
+// =============== //
+// Tables          //
+// =============== //
+message Table {
+  // @gotags: db:"table_name"
+  string TableName = 1;
+  // @gotags: db:"table_comment"
+  string TableComment = 2;
+}
+message ResponseTables {
+  repeated Table Tables = 1;
+  UsersMS_Status Status = 2;
+}
+
+// =================== //
+// Users access rights //
+// =================== //
+message UsersAccessRights {
+  // @gotags: db:"users_access_rights_id"
+  fixed64 Id = 1;
+  // @gotags: db:"users_access_rights_role_id"
+  fixed64 RoleId = 2;
+  // @gotags: db:"users_access_rights_role_name"
+  string RoleName = 3;
+  // @gotags: db:"users_access_rights_table_name"
+  string TableName = 4;
+  // @gotags: db:"users_access_rights_can_auth"
+  bool CanAuth = 5; //only fo table users
+  // @gotags: db:"users_access_rights_can_select"
+  bool CanSelect = 6;
+  // @gotags: db:"users_access_rights_can_insert"
+  bool CanInsert = 7;
+  // @gotags: db:"users_access_rights_can_update"
+  bool CanUpdate = 8;
+  // @gotags: db:"users_access_rights_can_delete"
+  bool CanDelete = 9;
+  // @gotags: db:"users_access_rights_created_at"
+  string CreatedAt = 10;
+  // @gotags: db:"users_access_rights_created_by"
+  fixed64 CreatedBy = 11;
+  // @gotags: db:"users_access_rights_created_by_name"
+  string CreatedByName = 12;
+  // @gotags: db:"users_access_rights_updated_at"
+  string UpdatedAt = 13;
+  // @gotags: db:"users_access_rights_updated_by"
+  fixed64 UpdatedBy = 14;
+  // @gotags: db:"users_access_rights_updated_by_name"
+  string UpdatedByName = 15;
+  // @gotags: db:"users_access_rights_isdeleted"
+  bool IsDeleted = 16;
+}
+message ResponseUsersAccessRights {
+  repeated UsersAccessRights UsersAccessRights = 1;
+  UsersMS_Status Status = 2;
+}
+
+// ============================= //
+// Users Access Rights For Table //
+// ============================= //
+message UsersAccessRightsForTable {
+  // @gotags: db:"user_id"
+  fixed64 UserId = 1;
+  // @gotags: db:"table_name"
+  string TableName = 2;
+  // @gotags: db:"field_name"
+  string Action = 3;
+  // @gotags: db:"result"
+  bool Result = 4;
+}
+message ResponseUsersAccessRightsForTable {
+  UsersAccessRightsForTable UsersAccessRightsForTable = 1;
+  UsersMS_Status Status = 2;
+}
+

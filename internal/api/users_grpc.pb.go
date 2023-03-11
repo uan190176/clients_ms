@@ -27,7 +27,7 @@ type UsersServicesClient interface {
 	GetUsers(ctx context.Context, in *RequestUser, opts ...grpc.CallOption) (*ResponseUsers, error)
 	CreateUser(ctx context.Context, in *RequestUser, opts ...grpc.CallOption) (*ResponseUsers, error)
 	UpdateUser(ctx context.Context, in *RequestUser, opts ...grpc.CallOption) (*ResponseUsers, error)
-	DeleteUser(ctx context.Context, in *RequestUser, opts ...grpc.CallOption) (*ResponseUsers, error)
+	UpdateUsersDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsers, error)
 	// Users history
 	GetUsersHistory(ctx context.Context, in *RequestUsersHistory, opts ...grpc.CallOption) (*ResponseUsersHistory, error)
 	DeleteUsersHistory(ctx context.Context, in *RequestUsersHistory, opts ...grpc.CallOption) (*ResponseUsersHistory, error)
@@ -35,15 +35,17 @@ type UsersServicesClient interface {
 	GetUsersRoles(ctx context.Context, in *RequestUsersRoles, opts ...grpc.CallOption) (*ResponseUsersRoles, error)
 	CreateUserRole(ctx context.Context, in *RequestUsersRoles, opts ...grpc.CallOption) (*ResponseUsersRoles, error)
 	UpdateUserRole(ctx context.Context, in *RequestUsersRoles, opts ...grpc.CallOption) (*ResponseUsersRoles, error)
-	DeleteUserRole(ctx context.Context, in *RequestUsersRoles, opts ...grpc.CallOption) (*ResponseUsersRoles, error)
+	UpdateUsersRolesDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsersRoles, error)
+	UpdateUsersRolesWithUsersAccessRightsDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsersRolesWithUar, error)
 	// Tables
 	GetTables(ctx context.Context, in *RequestTables, opts ...grpc.CallOption) (*ResponseTables, error)
 	// User access rights (uar in funcs)
 	GetUsersAccessRights(ctx context.Context, in *RequestUsersAccessRights, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error)
-	CreateUsersAccessRights(ctx context.Context, in *RequestUAR_Mass, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error)
-	UpdateUsersAccessRights(ctx context.Context, in *RequestUAR_Mass, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error)
-	DeleteUsersAccessRights(ctx context.Context, in *RequestUAR_Mass, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error)
-	GetUserAccessRightForTable(ctx context.Context, in *RequestUARforTable, opts ...grpc.CallOption) (*ResponseUARforTable, error)
+	CreateUsersAccessRights(ctx context.Context, in *RequestUsersAccessRightsMultiple, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error)
+	UpdateUsersAccessRights(ctx context.Context, in *RequestUsersAccessRightsMultiple, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error)
+	UpdateUsersAccessRightsDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error)
+	// Uses in all microservices to getting users access rights for current table before doing action with table
+	GetUserAccessRightForTable(ctx context.Context, in *RequestUsersAccessRightsForTable, opts ...grpc.CallOption) (*ResponseUsersAccessRightsForTable, error)
 }
 
 type usersServicesClient struct {
@@ -90,9 +92,9 @@ func (c *usersServicesClient) UpdateUser(ctx context.Context, in *RequestUser, o
 	return out, nil
 }
 
-func (c *usersServicesClient) DeleteUser(ctx context.Context, in *RequestUser, opts ...grpc.CallOption) (*ResponseUsers, error) {
+func (c *usersServicesClient) UpdateUsersDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsers, error) {
 	out := new(ResponseUsers)
-	err := c.cc.Invoke(ctx, "/usr.UsersServices/DeleteUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usr.UsersServices/UpdateUsersDeletionFlags", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -144,9 +146,18 @@ func (c *usersServicesClient) UpdateUserRole(ctx context.Context, in *RequestUse
 	return out, nil
 }
 
-func (c *usersServicesClient) DeleteUserRole(ctx context.Context, in *RequestUsersRoles, opts ...grpc.CallOption) (*ResponseUsersRoles, error) {
+func (c *usersServicesClient) UpdateUsersRolesDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsersRoles, error) {
 	out := new(ResponseUsersRoles)
-	err := c.cc.Invoke(ctx, "/usr.UsersServices/DeleteUserRole", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usr.UsersServices/UpdateUsersRolesDeletionFlags", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServicesClient) UpdateUsersRolesWithUsersAccessRightsDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsersRolesWithUar, error) {
+	out := new(ResponseUsersRolesWithUar)
+	err := c.cc.Invoke(ctx, "/usr.UsersServices/UpdateUsersRolesWithUsersAccessRightsDeletionFlags", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +182,7 @@ func (c *usersServicesClient) GetUsersAccessRights(ctx context.Context, in *Requ
 	return out, nil
 }
 
-func (c *usersServicesClient) CreateUsersAccessRights(ctx context.Context, in *RequestUAR_Mass, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error) {
+func (c *usersServicesClient) CreateUsersAccessRights(ctx context.Context, in *RequestUsersAccessRightsMultiple, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error) {
 	out := new(ResponseUsersAccessRights)
 	err := c.cc.Invoke(ctx, "/usr.UsersServices/CreateUsersAccessRights", in, out, opts...)
 	if err != nil {
@@ -180,7 +191,7 @@ func (c *usersServicesClient) CreateUsersAccessRights(ctx context.Context, in *R
 	return out, nil
 }
 
-func (c *usersServicesClient) UpdateUsersAccessRights(ctx context.Context, in *RequestUAR_Mass, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error) {
+func (c *usersServicesClient) UpdateUsersAccessRights(ctx context.Context, in *RequestUsersAccessRightsMultiple, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error) {
 	out := new(ResponseUsersAccessRights)
 	err := c.cc.Invoke(ctx, "/usr.UsersServices/UpdateUsersAccessRights", in, out, opts...)
 	if err != nil {
@@ -189,17 +200,17 @@ func (c *usersServicesClient) UpdateUsersAccessRights(ctx context.Context, in *R
 	return out, nil
 }
 
-func (c *usersServicesClient) DeleteUsersAccessRights(ctx context.Context, in *RequestUAR_Mass, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error) {
+func (c *usersServicesClient) UpdateUsersAccessRightsDeletionFlags(ctx context.Context, in *RequestDeletionFlags, opts ...grpc.CallOption) (*ResponseUsersAccessRights, error) {
 	out := new(ResponseUsersAccessRights)
-	err := c.cc.Invoke(ctx, "/usr.UsersServices/DeleteUsersAccessRights", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/usr.UsersServices/UpdateUsersAccessRightsDeletionFlags", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *usersServicesClient) GetUserAccessRightForTable(ctx context.Context, in *RequestUARforTable, opts ...grpc.CallOption) (*ResponseUARforTable, error) {
-	out := new(ResponseUARforTable)
+func (c *usersServicesClient) GetUserAccessRightForTable(ctx context.Context, in *RequestUsersAccessRightsForTable, opts ...grpc.CallOption) (*ResponseUsersAccessRightsForTable, error) {
+	out := new(ResponseUsersAccessRightsForTable)
 	err := c.cc.Invoke(ctx, "/usr.UsersServices/GetUserAccessRightForTable", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -216,7 +227,7 @@ type UsersServicesServer interface {
 	GetUsers(context.Context, *RequestUser) (*ResponseUsers, error)
 	CreateUser(context.Context, *RequestUser) (*ResponseUsers, error)
 	UpdateUser(context.Context, *RequestUser) (*ResponseUsers, error)
-	DeleteUser(context.Context, *RequestUser) (*ResponseUsers, error)
+	UpdateUsersDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsers, error)
 	// Users history
 	GetUsersHistory(context.Context, *RequestUsersHistory) (*ResponseUsersHistory, error)
 	DeleteUsersHistory(context.Context, *RequestUsersHistory) (*ResponseUsersHistory, error)
@@ -224,15 +235,17 @@ type UsersServicesServer interface {
 	GetUsersRoles(context.Context, *RequestUsersRoles) (*ResponseUsersRoles, error)
 	CreateUserRole(context.Context, *RequestUsersRoles) (*ResponseUsersRoles, error)
 	UpdateUserRole(context.Context, *RequestUsersRoles) (*ResponseUsersRoles, error)
-	DeleteUserRole(context.Context, *RequestUsersRoles) (*ResponseUsersRoles, error)
+	UpdateUsersRolesDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsersRoles, error)
+	UpdateUsersRolesWithUsersAccessRightsDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsersRolesWithUar, error)
 	// Tables
 	GetTables(context.Context, *RequestTables) (*ResponseTables, error)
 	// User access rights (uar in funcs)
 	GetUsersAccessRights(context.Context, *RequestUsersAccessRights) (*ResponseUsersAccessRights, error)
-	CreateUsersAccessRights(context.Context, *RequestUAR_Mass) (*ResponseUsersAccessRights, error)
-	UpdateUsersAccessRights(context.Context, *RequestUAR_Mass) (*ResponseUsersAccessRights, error)
-	DeleteUsersAccessRights(context.Context, *RequestUAR_Mass) (*ResponseUsersAccessRights, error)
-	GetUserAccessRightForTable(context.Context, *RequestUARforTable) (*ResponseUARforTable, error)
+	CreateUsersAccessRights(context.Context, *RequestUsersAccessRightsMultiple) (*ResponseUsersAccessRights, error)
+	UpdateUsersAccessRights(context.Context, *RequestUsersAccessRightsMultiple) (*ResponseUsersAccessRights, error)
+	UpdateUsersAccessRightsDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsersAccessRights, error)
+	// Uses in all microservices to getting users access rights for current table before doing action with table
+	GetUserAccessRightForTable(context.Context, *RequestUsersAccessRightsForTable) (*ResponseUsersAccessRightsForTable, error)
 	mustEmbedUnimplementedUsersServicesServer()
 }
 
@@ -252,8 +265,8 @@ func (UnimplementedUsersServicesServer) CreateUser(context.Context, *RequestUser
 func (UnimplementedUsersServicesServer) UpdateUser(context.Context, *RequestUser) (*ResponseUsers, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedUsersServicesServer) DeleteUser(context.Context, *RequestUser) (*ResponseUsers, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+func (UnimplementedUsersServicesServer) UpdateUsersDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsers, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUsersDeletionFlags not implemented")
 }
 func (UnimplementedUsersServicesServer) GetUsersHistory(context.Context, *RequestUsersHistory) (*ResponseUsersHistory, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsersHistory not implemented")
@@ -270,8 +283,11 @@ func (UnimplementedUsersServicesServer) CreateUserRole(context.Context, *Request
 func (UnimplementedUsersServicesServer) UpdateUserRole(context.Context, *RequestUsersRoles) (*ResponseUsersRoles, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserRole not implemented")
 }
-func (UnimplementedUsersServicesServer) DeleteUserRole(context.Context, *RequestUsersRoles) (*ResponseUsersRoles, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserRole not implemented")
+func (UnimplementedUsersServicesServer) UpdateUsersRolesDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsersRoles, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUsersRolesDeletionFlags not implemented")
+}
+func (UnimplementedUsersServicesServer) UpdateUsersRolesWithUsersAccessRightsDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsersRolesWithUar, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUsersRolesWithUsersAccessRightsDeletionFlags not implemented")
 }
 func (UnimplementedUsersServicesServer) GetTables(context.Context, *RequestTables) (*ResponseTables, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTables not implemented")
@@ -279,16 +295,16 @@ func (UnimplementedUsersServicesServer) GetTables(context.Context, *RequestTable
 func (UnimplementedUsersServicesServer) GetUsersAccessRights(context.Context, *RequestUsersAccessRights) (*ResponseUsersAccessRights, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsersAccessRights not implemented")
 }
-func (UnimplementedUsersServicesServer) CreateUsersAccessRights(context.Context, *RequestUAR_Mass) (*ResponseUsersAccessRights, error) {
+func (UnimplementedUsersServicesServer) CreateUsersAccessRights(context.Context, *RequestUsersAccessRightsMultiple) (*ResponseUsersAccessRights, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUsersAccessRights not implemented")
 }
-func (UnimplementedUsersServicesServer) UpdateUsersAccessRights(context.Context, *RequestUAR_Mass) (*ResponseUsersAccessRights, error) {
+func (UnimplementedUsersServicesServer) UpdateUsersAccessRights(context.Context, *RequestUsersAccessRightsMultiple) (*ResponseUsersAccessRights, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUsersAccessRights not implemented")
 }
-func (UnimplementedUsersServicesServer) DeleteUsersAccessRights(context.Context, *RequestUAR_Mass) (*ResponseUsersAccessRights, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUsersAccessRights not implemented")
+func (UnimplementedUsersServicesServer) UpdateUsersAccessRightsDeletionFlags(context.Context, *RequestDeletionFlags) (*ResponseUsersAccessRights, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUsersAccessRightsDeletionFlags not implemented")
 }
-func (UnimplementedUsersServicesServer) GetUserAccessRightForTable(context.Context, *RequestUARforTable) (*ResponseUARforTable, error) {
+func (UnimplementedUsersServicesServer) GetUserAccessRightForTable(context.Context, *RequestUsersAccessRightsForTable) (*ResponseUsersAccessRightsForTable, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserAccessRightForTable not implemented")
 }
 func (UnimplementedUsersServicesServer) mustEmbedUnimplementedUsersServicesServer() {}
@@ -376,20 +392,20 @@ func _UsersServices_UpdateUser_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersServices_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestUser)
+func _UsersServices_UpdateUsersDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDeletionFlags)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServicesServer).DeleteUser(ctx, in)
+		return srv.(UsersServicesServer).UpdateUsersDeletionFlags(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usr.UsersServices/DeleteUser",
+		FullMethod: "/usr.UsersServices/UpdateUsersDeletionFlags",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServicesServer).DeleteUser(ctx, req.(*RequestUser))
+		return srv.(UsersServicesServer).UpdateUsersDeletionFlags(ctx, req.(*RequestDeletionFlags))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -484,20 +500,38 @@ func _UsersServices_UpdateUserRole_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersServices_DeleteUserRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestUsersRoles)
+func _UsersServices_UpdateUsersRolesDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDeletionFlags)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServicesServer).DeleteUserRole(ctx, in)
+		return srv.(UsersServicesServer).UpdateUsersRolesDeletionFlags(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usr.UsersServices/DeleteUserRole",
+		FullMethod: "/usr.UsersServices/UpdateUsersRolesDeletionFlags",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServicesServer).DeleteUserRole(ctx, req.(*RequestUsersRoles))
+		return srv.(UsersServicesServer).UpdateUsersRolesDeletionFlags(ctx, req.(*RequestDeletionFlags))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersServices_UpdateUsersRolesWithUsersAccessRightsDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDeletionFlags)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServicesServer).UpdateUsersRolesWithUsersAccessRightsDeletionFlags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/usr.UsersServices/UpdateUsersRolesWithUsersAccessRightsDeletionFlags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServicesServer).UpdateUsersRolesWithUsersAccessRightsDeletionFlags(ctx, req.(*RequestDeletionFlags))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -539,7 +573,7 @@ func _UsersServices_GetUsersAccessRights_Handler(srv interface{}, ctx context.Co
 }
 
 func _UsersServices_CreateUsersAccessRights_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestUAR_Mass)
+	in := new(RequestUsersAccessRightsMultiple)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -551,13 +585,13 @@ func _UsersServices_CreateUsersAccessRights_Handler(srv interface{}, ctx context
 		FullMethod: "/usr.UsersServices/CreateUsersAccessRights",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServicesServer).CreateUsersAccessRights(ctx, req.(*RequestUAR_Mass))
+		return srv.(UsersServicesServer).CreateUsersAccessRights(ctx, req.(*RequestUsersAccessRightsMultiple))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UsersServices_UpdateUsersAccessRights_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestUAR_Mass)
+	in := new(RequestUsersAccessRightsMultiple)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -569,31 +603,31 @@ func _UsersServices_UpdateUsersAccessRights_Handler(srv interface{}, ctx context
 		FullMethod: "/usr.UsersServices/UpdateUsersAccessRights",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServicesServer).UpdateUsersAccessRights(ctx, req.(*RequestUAR_Mass))
+		return srv.(UsersServicesServer).UpdateUsersAccessRights(ctx, req.(*RequestUsersAccessRightsMultiple))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersServices_DeleteUsersAccessRights_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestUAR_Mass)
+func _UsersServices_UpdateUsersAccessRightsDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestDeletionFlags)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServicesServer).DeleteUsersAccessRights(ctx, in)
+		return srv.(UsersServicesServer).UpdateUsersAccessRightsDeletionFlags(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/usr.UsersServices/DeleteUsersAccessRights",
+		FullMethod: "/usr.UsersServices/UpdateUsersAccessRightsDeletionFlags",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServicesServer).DeleteUsersAccessRights(ctx, req.(*RequestUAR_Mass))
+		return srv.(UsersServicesServer).UpdateUsersAccessRightsDeletionFlags(ctx, req.(*RequestDeletionFlags))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UsersServices_GetUserAccessRightForTable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestUARforTable)
+	in := new(RequestUsersAccessRightsForTable)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -605,7 +639,7 @@ func _UsersServices_GetUserAccessRightForTable_Handler(srv interface{}, ctx cont
 		FullMethod: "/usr.UsersServices/GetUserAccessRightForTable",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServicesServer).GetUserAccessRightForTable(ctx, req.(*RequestUARforTable))
+		return srv.(UsersServicesServer).GetUserAccessRightForTable(ctx, req.(*RequestUsersAccessRightsForTable))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -634,8 +668,8 @@ var UsersServices_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersServices_UpdateUser_Handler,
 		},
 		{
-			MethodName: "DeleteUser",
-			Handler:    _UsersServices_DeleteUser_Handler,
+			MethodName: "UpdateUsersDeletionFlags",
+			Handler:    _UsersServices_UpdateUsersDeletionFlags_Handler,
 		},
 		{
 			MethodName: "GetUsersHistory",
@@ -658,8 +692,12 @@ var UsersServices_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersServices_UpdateUserRole_Handler,
 		},
 		{
-			MethodName: "DeleteUserRole",
-			Handler:    _UsersServices_DeleteUserRole_Handler,
+			MethodName: "UpdateUsersRolesDeletionFlags",
+			Handler:    _UsersServices_UpdateUsersRolesDeletionFlags_Handler,
+		},
+		{
+			MethodName: "UpdateUsersRolesWithUsersAccessRightsDeletionFlags",
+			Handler:    _UsersServices_UpdateUsersRolesWithUsersAccessRightsDeletionFlags_Handler,
 		},
 		{
 			MethodName: "GetTables",
@@ -678,8 +716,8 @@ var UsersServices_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersServices_UpdateUsersAccessRights_Handler,
 		},
 		{
-			MethodName: "DeleteUsersAccessRights",
-			Handler:    _UsersServices_DeleteUsersAccessRights_Handler,
+			MethodName: "UpdateUsersAccessRightsDeletionFlags",
+			Handler:    _UsersServices_UpdateUsersAccessRightsDeletionFlags_Handler,
 		},
 		{
 			MethodName: "GetUserAccessRightForTable",

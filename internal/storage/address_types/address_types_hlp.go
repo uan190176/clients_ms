@@ -189,18 +189,21 @@ func CreateQueryAddressTypeUpdate(req *api.RequestAddressType) (string, st.Respo
 	sValues := ""
 	cnt := 0
 
+	//Name
 	if req.Name != "" {
 		sFields += "name, "
 		sValues += fmt.Sprintf("'%s', ", req.Name)
 		cnt++
 	}
 
+	//Code
 	if req.Code != "" {
 		sFields += "code, "
 		sValues += fmt.Sprintf("'%s', ", req.Code)
 		cnt++
 	}
 
+	//Comment
 	if req.Comment != "" {
 		sFields += "comment, "
 		sValues += fmt.Sprintf("'%s', ", req.Comment)
@@ -237,6 +240,13 @@ func CreateQueryAddressTypeUpdate(req *api.RequestAddressType) (string, st.Respo
 		} else {
 			sValues += fmt.Sprintf("%t, ", false)
 		}
+		cnt++
+	}
+
+	//AuthorId
+	if req.AuthorId != 0 {
+		sFields += "updated_by, "
+		sValues += fmt.Sprintf("%d, ", req.AuthorId)
 		cnt++
 	}
 

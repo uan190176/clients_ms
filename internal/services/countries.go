@@ -10,6 +10,8 @@ import (
 	st "github.com/uan190176/statuses"
 )
 
+const countriesTableName = "public.countries_ref"
+
 // GetCountries - returns countries
 func (s *GrpcClientsServer) GetCountries(ctx context.Context, req *api.RequestCountry) (*api.ResponseCountries, error) {
 
@@ -31,7 +33,7 @@ func (s *GrpcClientsServer) GetCountries(ctx context.Context, req *api.RequestCo
 	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.countries_ref",
+		TableName: countriesTableName,
 		Action:    api.UsersAccessRights_Actions_CAN_SELECT,
 	})
 
@@ -87,7 +89,7 @@ func (s *GrpcClientsServer) CreateCountry(ctx context.Context, req *api.RequestC
 	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.countries_ref",
+		TableName: countriesTableName,
 		Action:    api.UsersAccessRights_Actions_CAN_INSERT,
 	})
 
@@ -143,7 +145,7 @@ func (s *GrpcClientsServer) UpdateCountry(ctx context.Context, req *api.RequestC
 	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.countries_ref",
+		TableName: countriesTableName,
 		Action:    api.UsersAccessRights_Actions_CAN_UPDATE,
 	})
 
@@ -199,7 +201,7 @@ func (s *GrpcClientsServer) UpdateCountriesDeletionFlags(ctx context.Context, re
 	allow, stat := hlp.GetUserAccessRightForTable(ctx, &api.RequestUsersAccessRightsForTable{
 		AuthToken: cfg.CFG.MicroServices["users_ms"].Token,
 		UserId:    req.AuthorId,
-		TableName: "public.countries_ref",
+		TableName: countriesTableName,
 		Action:    api.UsersAccessRights_Actions_CAN_DELETE,
 	})
 

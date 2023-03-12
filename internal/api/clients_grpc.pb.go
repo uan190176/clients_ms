@@ -37,6 +37,11 @@ type ClientsServicesClient interface {
 	CreateDelivery(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error)
 	UpdateDelivery(ctx context.Context, in *RequestDelivery, opts ...grpc.CallOption) (*ResponseDeliveries, error)
 	UpdateDeliveriesDeletionFlags(ctx context.Context, in *RequestDeliveriesDeletionFlags, opts ...grpc.CallOption) (*ResponseDeliveries, error)
+	// Notes
+	GetNotes(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error)
+	CreateNote(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error)
+	UpdateNote(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error)
+	UpdateNotesDeletionFlags(ctx context.Context, in *RequestNotesDeletionFlags, opts ...grpc.CallOption) (*ResponseNotes, error)
 }
 
 type clientsServicesClient struct {
@@ -155,6 +160,42 @@ func (c *clientsServicesClient) UpdateDeliveriesDeletionFlags(ctx context.Contex
 	return out, nil
 }
 
+func (c *clientsServicesClient) GetNotes(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error) {
+	out := new(ResponseNotes)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/GetNotes", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) CreateNote(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error) {
+	out := new(ResponseNotes)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/CreateNote", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateNote(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error) {
+	out := new(ResponseNotes)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateNote", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateNotesDeletionFlags(ctx context.Context, in *RequestNotesDeletionFlags, opts ...grpc.CallOption) (*ResponseNotes, error) {
+	out := new(ResponseNotes)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateNotesDeletionFlags", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClientsServicesServer is the server API for ClientsServices service.
 // All implementations must embed UnimplementedClientsServicesServer
 // for forward compatibility
@@ -174,6 +215,11 @@ type ClientsServicesServer interface {
 	CreateDelivery(context.Context, *RequestDelivery) (*ResponseDeliveries, error)
 	UpdateDelivery(context.Context, *RequestDelivery) (*ResponseDeliveries, error)
 	UpdateDeliveriesDeletionFlags(context.Context, *RequestDeliveriesDeletionFlags) (*ResponseDeliveries, error)
+	// Notes
+	GetNotes(context.Context, *RequestNote) (*ResponseNotes, error)
+	CreateNote(context.Context, *RequestNote) (*ResponseNotes, error)
+	UpdateNote(context.Context, *RequestNote) (*ResponseNotes, error)
+	UpdateNotesDeletionFlags(context.Context, *RequestNotesDeletionFlags) (*ResponseNotes, error)
 	mustEmbedUnimplementedClientsServicesServer()
 }
 
@@ -216,6 +262,18 @@ func (UnimplementedClientsServicesServer) UpdateDelivery(context.Context, *Reque
 }
 func (UnimplementedClientsServicesServer) UpdateDeliveriesDeletionFlags(context.Context, *RequestDeliveriesDeletionFlags) (*ResponseDeliveries, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeliveriesDeletionFlags not implemented")
+}
+func (UnimplementedClientsServicesServer) GetNotes(context.Context, *RequestNote) (*ResponseNotes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNotes not implemented")
+}
+func (UnimplementedClientsServicesServer) CreateNote(context.Context, *RequestNote) (*ResponseNotes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNote not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateNote(context.Context, *RequestNote) (*ResponseNotes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNote not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateNotesDeletionFlags(context.Context, *RequestNotesDeletionFlags) (*ResponseNotes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNotesDeletionFlags not implemented")
 }
 func (UnimplementedClientsServicesServer) mustEmbedUnimplementedClientsServicesServer() {}
 
@@ -446,6 +504,78 @@ func _ClientsServices_UpdateDeliveriesDeletionFlags_Handler(srv interface{}, ctx
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClientsServices_GetNotes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestNote)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).GetNotes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/GetNotes",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).GetNotes(ctx, req.(*RequestNote))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_CreateNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestNote)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).CreateNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/CreateNote",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).CreateNote(ctx, req.(*RequestNote))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateNote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestNote)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateNote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateNote",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateNote(ctx, req.(*RequestNote))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateNotesDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestNotesDeletionFlags)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateNotesDeletionFlags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateNotesDeletionFlags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateNotesDeletionFlags(ctx, req.(*RequestNotesDeletionFlags))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClientsServices_ServiceDesc is the grpc.ServiceDesc for ClientsServices service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -500,6 +630,22 @@ var ClientsServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDeliveriesDeletionFlags",
 			Handler:    _ClientsServices_UpdateDeliveriesDeletionFlags_Handler,
+		},
+		{
+			MethodName: "GetNotes",
+			Handler:    _ClientsServices_GetNotes_Handler,
+		},
+		{
+			MethodName: "CreateNote",
+			Handler:    _ClientsServices_CreateNote_Handler,
+		},
+		{
+			MethodName: "UpdateNote",
+			Handler:    _ClientsServices_UpdateNote_Handler,
+		},
+		{
+			MethodName: "UpdateNotesDeletionFlags",
+			Handler:    _ClientsServices_UpdateNotesDeletionFlags_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

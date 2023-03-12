@@ -51,6 +51,13 @@ enum ClientsMS_DeliveriesOrder {
   BY_DELIVERY_UPDATED_AT = 3;
 }
 
+//Notes
+enum ClientsMS_NotesOrder {
+  BY_NOTE_ID = 0;
+  BY_NOTE_CREATED_AT = 1;
+  BY_NOTE_UPDATED_AT = 2;
+}
+
 //***********************************************************************
 // SERVICES
 //***********************************************************************
@@ -74,12 +81,19 @@ service ClientsServices {
   rpc UpdateDelivery(RequestDelivery) returns (ResponseDeliveries) {} //pass
   rpc UpdateDeliveriesDeletionFlags(RequestDeliveriesDeletionFlags) returns (ResponseDeliveries) {} //pass
 
+  // Notes
+  rpc GetNotes(RequestNote) returns (ResponseNotes) {} //
+  rpc CreateNote(RequestNote) returns (ResponseNotes) {} //pass
+  rpc UpdateNote(RequestNote) returns (ResponseNotes) {} //pass
+  rpc UpdateNotesDeletionFlags(RequestNotesDeletionFlags) returns (ResponseNotes) {} //pass
+
 }
 
 
 //***********************************************************************
 // Requests
 //***********************************************************************
+
 
 // =============== //
 //   Countries     //
@@ -147,6 +161,25 @@ message RequestDeliveriesDeletionFlags {
   repeated fixed64 Ids = 4;
 }
 
+// =============== //
+//   Notes         //
+// =============== //
+message RequestNote {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  fixed64 Id = 3;
+  fixed64 ClientId = 4;
+  string NoteText = 5;
+  ClientsMS_Bool IsDeleted = 6;
+  ClientsMS_NotesOrder Order = 7;
+  ClientsMS_OrderType OrderType = 8;
+}
+message RequestNotesDeletionFlags {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  ClientsMS_Bool IsDeleted = 3;
+  repeated fixed64 Ids = 4;
+}
 
 //***********************************************************************
 // Responses
@@ -253,5 +286,36 @@ message Delivery {
 }
 message ResponseDeliveries {
   repeated Delivery Deliveries = 1;
+  ClientsMS_Status Status = 2;
+}
+
+
+// =============== //
+//   Notes         //
+// =============== //
+message Note {
+  // @gotags: db:"note_id"
+  fixed64 Id = 1;
+  // @gotags: db:"note_client_id"
+  fixed64 ClientId = 2;
+  // @gotags: db:"note_text"
+  string NoteText = 3;
+  // @gotags: db:"note_created_at"
+  string CreatedAt = 4;
+  // @gotags: db:"note_created_by"
+  fixed64 CreatedBy = 5;
+  // @gotags: db:"note_created_by_name"
+  string CreatedByName = 6;
+  // @gotags: db:"note_updated_at"
+  string UpdatedAt = 7;
+  // @gotags: db:"note_updated_by"
+  fixed64 UpdatedBy = 8;
+  // @gotags: db:"note_updated_by_name"
+  string UpdatedByName = 9;
+  // @gotags: db:"note_isdeleted"
+  bool IsDeleted = 10;
+}
+message ResponseNotes {
+  repeated Note Notes = 1;
   ClientsMS_Status Status = 2;
 }

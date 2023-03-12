@@ -129,16 +129,20 @@ func CreateQueryDeliveryUpdate(req *api.RequestDelivery) (string, st.ResponseSta
 	sValues := ""
 	cnt := 0
 
+	//Name
 	if req.Name != "" {
 		sFields += "name, "
 		sValues += fmt.Sprintf("'%s', ", req.Name)
 		cnt++
 	}
+
+	//Comment
 	if req.Comment != "" {
 		sFields += "comment, "
 		sValues += fmt.Sprintf("'%s', ", req.Comment)
 		cnt++
 	}
+
 	// Is deleted
 	if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE || req.IsDeleted == api.ClientsMS_Bool_IS_FALSE {
 		sFields += "isdeleted, "
@@ -147,6 +151,13 @@ func CreateQueryDeliveryUpdate(req *api.RequestDelivery) (string, st.ResponseSta
 		} else {
 			sValues += fmt.Sprintf("%t, ", false)
 		}
+		cnt++
+	}
+
+	//AuthorId
+	if req.AuthorId != 0 {
+		sFields += "updated_by, "
+		sValues += fmt.Sprintf("%d, ", req.AuthorId)
 		cnt++
 	}
 
@@ -270,9 +281,9 @@ func addOrderToQueryDeliveriesSelect(q string, req *api.RequestDelivery) string 
 	case api.ClientsMS_DeliveriesOrder_BY_DELIVERY_NAME:
 		strOrder = " ORDER BY delivery_name"
 	case api.ClientsMS_DeliveriesOrder_BY_DELIVERY_CREATED_AT:
-		strOrder = " ORDER BY delivery_created"
+		strOrder = " ORDER BY delivery_created_at"
 	case api.ClientsMS_DeliveriesOrder_BY_DELIVERY_UPDATED_AT:
-		strOrder = " ORDER BY delivery_changed"
+		strOrder = " ORDER BY delivery_updated_at"
 	default:
 		strOrder = " ORDER BY delivery_id"
 	}

@@ -154,16 +154,20 @@ func CreateQueryCountryUpdate(req *api.RequestCountry) (string, st.ResponseStatu
 	sValues := ""
 	cnt := 0
 
+	//Name
 	if req.Name != "" {
 		sFields += "name, "
 		sValues += fmt.Sprintf("'%s', ", req.Name)
 		cnt++
 	}
+
+	//Comment
 	if req.Comment != "" {
 		sFields += "comment, "
 		sValues += fmt.Sprintf("'%s', ", req.Comment)
 		cnt++
 	}
+
 	// Is deleted
 	if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE || req.IsDeleted == api.ClientsMS_Bool_IS_FALSE {
 		sFields += "isdeleted, "
@@ -172,6 +176,13 @@ func CreateQueryCountryUpdate(req *api.RequestCountry) (string, st.ResponseStatu
 		} else {
 			sValues += fmt.Sprintf("%t, ", false)
 		}
+		cnt++
+	}
+
+	//AuthorId
+	if req.AuthorId != 0 {
+		sFields += "updated_by, "
+		sValues += fmt.Sprintf("%d, ", req.AuthorId)
 		cnt++
 	}
 

@@ -42,6 +42,11 @@ type ClientsServicesClient interface {
 	CreateNote(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error)
 	UpdateNote(ctx context.Context, in *RequestNote, opts ...grpc.CallOption) (*ResponseNotes, error)
 	UpdateNotesDeletionFlags(ctx context.Context, in *RequestNotesDeletionFlags, opts ...grpc.CallOption) (*ResponseNotes, error)
+	// Addresses
+	GetAddresses(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error)
+	CreateAddress(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error)
+	UpdateAddress(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error)
+	UpdateAddressesDeletionFlags(ctx context.Context, in *RequestAddressesDeletionFlags, opts ...grpc.CallOption) (*ResponseAddresses, error)
 }
 
 type clientsServicesClient struct {
@@ -196,6 +201,42 @@ func (c *clientsServicesClient) UpdateNotesDeletionFlags(ctx context.Context, in
 	return out, nil
 }
 
+func (c *clientsServicesClient) GetAddresses(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error) {
+	out := new(ResponseAddresses)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/GetAddresses", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) CreateAddress(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error) {
+	out := new(ResponseAddresses)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/CreateAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateAddress(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error) {
+	out := new(ResponseAddresses)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateAddressesDeletionFlags(ctx context.Context, in *RequestAddressesDeletionFlags, opts ...grpc.CallOption) (*ResponseAddresses, error) {
+	out := new(ResponseAddresses)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateAddressesDeletionFlags", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClientsServicesServer is the server API for ClientsServices service.
 // All implementations must embed UnimplementedClientsServicesServer
 // for forward compatibility
@@ -220,6 +261,11 @@ type ClientsServicesServer interface {
 	CreateNote(context.Context, *RequestNote) (*ResponseNotes, error)
 	UpdateNote(context.Context, *RequestNote) (*ResponseNotes, error)
 	UpdateNotesDeletionFlags(context.Context, *RequestNotesDeletionFlags) (*ResponseNotes, error)
+	// Addresses
+	GetAddresses(context.Context, *RequestAddress) (*ResponseAddresses, error)
+	CreateAddress(context.Context, *RequestAddress) (*ResponseAddresses, error)
+	UpdateAddress(context.Context, *RequestAddress) (*ResponseAddresses, error)
+	UpdateAddressesDeletionFlags(context.Context, *RequestAddressesDeletionFlags) (*ResponseAddresses, error)
 	mustEmbedUnimplementedClientsServicesServer()
 }
 
@@ -274,6 +320,18 @@ func (UnimplementedClientsServicesServer) UpdateNote(context.Context, *RequestNo
 }
 func (UnimplementedClientsServicesServer) UpdateNotesDeletionFlags(context.Context, *RequestNotesDeletionFlags) (*ResponseNotes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateNotesDeletionFlags not implemented")
+}
+func (UnimplementedClientsServicesServer) GetAddresses(context.Context, *RequestAddress) (*ResponseAddresses, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAddresses not implemented")
+}
+func (UnimplementedClientsServicesServer) CreateAddress(context.Context, *RequestAddress) (*ResponseAddresses, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAddress not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateAddress(context.Context, *RequestAddress) (*ResponseAddresses, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAddress not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateAddressesDeletionFlags(context.Context, *RequestAddressesDeletionFlags) (*ResponseAddresses, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAddressesDeletionFlags not implemented")
 }
 func (UnimplementedClientsServicesServer) mustEmbedUnimplementedClientsServicesServer() {}
 
@@ -576,6 +634,78 @@ func _ClientsServices_UpdateNotesDeletionFlags_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClientsServices_GetAddresses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestAddress)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).GetAddresses(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/GetAddresses",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).GetAddresses(ctx, req.(*RequestAddress))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_CreateAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestAddress)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).CreateAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/CreateAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).CreateAddress(ctx, req.(*RequestAddress))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestAddress)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateAddress(ctx, req.(*RequestAddress))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateAddressesDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestAddressesDeletionFlags)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateAddressesDeletionFlags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateAddressesDeletionFlags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateAddressesDeletionFlags(ctx, req.(*RequestAddressesDeletionFlags))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClientsServices_ServiceDesc is the grpc.ServiceDesc for ClientsServices service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -646,6 +776,22 @@ var ClientsServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateNotesDeletionFlags",
 			Handler:    _ClientsServices_UpdateNotesDeletionFlags_Handler,
+		},
+		{
+			MethodName: "GetAddresses",
+			Handler:    _ClientsServices_GetAddresses_Handler,
+		},
+		{
+			MethodName: "CreateAddress",
+			Handler:    _ClientsServices_CreateAddress_Handler,
+		},
+		{
+			MethodName: "UpdateAddress",
+			Handler:    _ClientsServices_UpdateAddress_Handler,
+		},
+		{
+			MethodName: "UpdateAddressesDeletionFlags",
+			Handler:    _ClientsServices_UpdateAddressesDeletionFlags_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

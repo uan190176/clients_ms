@@ -122,7 +122,7 @@ func CheckRequiredFieldsNotesDeletionFlagUpdate(req *api.RequestNotesDeletionFla
 // createQueryNotesSelect - returns query to SELECT
 func createQueryNotesSelect() string {
 	lgr.LOG.Info("-->> ", "notes.createQueryNotesSelect()")
-	q := fmt.Sprintf("SELECT %s FROM notes_reg_info", createViewNotes())
+	q := fmt.Sprintf("SELECT %s FROM clients_notes_reg_info", createViewNotes())
 	lgr.LOG.Info("_QUERY_: ", q)
 	lgr.LOG.Info("<<-- ", "notes.createQueryNotesSelect()")
 	return q
@@ -132,7 +132,7 @@ func createQueryNotesSelect() string {
 func CreateQueryNoteInsert(req *api.RequestNote) (string, st.ResponseStatus) {
 	lgr.LOG.Info("-->> ", "notes.CreateQueryNoteInsert()")
 
-	q := fmt.Sprintf("INSERT INTO notes_reg_info (client_id, note_text, created_by) VALUES (%d, '%s', %d) RETURNING ", req.ClientId, req.NoteText, req.AuthorId)
+	q := fmt.Sprintf("INSERT INTO clients_notes_reg_info (client_id, note_text, created_by) VALUES (%d, '%s', %d) RETURNING ", req.ClientId, req.NoteText, req.AuthorId)
 
 	q += createViewNotes()
 
@@ -179,9 +179,9 @@ func CreateQueryNoteUpdate(req *api.RequestNote) (string, st.ResponseStatus) {
 
 	q := ""
 	if cnt > 1 {
-		q = "UPDATE notes_reg_info SET (" + sFields + ") = (" + sValues + ")"
+		q = "UPDATE clients_notes_reg_info SET (" + sFields + ") = (" + sValues + ")"
 	} else {
-		q = "UPDATE notes_reg_info SET " + sFields + " = " + sValues
+		q = "UPDATE clients_notes_reg_info SET " + sFields + " = " + sValues
 	}
 
 	q += fmt.Sprintf(" WHERE id = %d RETURNING ", req.Id)
@@ -189,14 +189,14 @@ func CreateQueryNoteUpdate(req *api.RequestNote) (string, st.ResponseStatus) {
 
 	lgr.LOG.Info("_QUERY_: ", q)
 
-	lgr.LOG.Info("<<-- ", "deliveries.CreateQueryNoteUpdate()")
+	lgr.LOG.Info("<<-- ", "notes.CreateQueryNoteUpdate()")
 	return q, st.GetStatus(100)
 }
 
 // CreateQueryNotesDeletionFlagsUpdate - returns query to UPDATE notes deletion flags
 func CreateQueryNotesDeletionFlagsUpdate(req *api.RequestNotesDeletionFlags) string {
 	lgr.LOG.Info("-->> ", "notes.CreateQueryNotesDeletionFlagsUpdate()")
-	q := fmt.Sprintf("UPDATE notes_reg_info SET isdeleted = %t, updated_by = %d WHERE id IN %s RETURNING ",
+	q := fmt.Sprintf("UPDATE clients_notes_reg_info SET isdeleted = %t, updated_by = %d WHERE id IN %s RETURNING ",
 		hlp.GetBool(req.IsDeleted), req.AuthorId, hlp.Uint64ArrayToString(req.Ids))
 	q += createViewNotes()
 	lgr.LOG.Info("_QUERY_: ", q)
@@ -231,7 +231,7 @@ func addWhereToQueryNotesSelect(q string, req *api.RequestNote) string {
 
 	// ClientID
 	if req.ClientId != 0 {
-		q += fmt.Sprintf(" WHERE note_client_id = %d", req.ClientId)
+		q += fmt.Sprintf(" WHERE client_id = %d", req.ClientId)
 		cnt++
 	}
 
@@ -239,16 +239,16 @@ func addWhereToQueryNotesSelect(q string, req *api.RequestNote) string {
 	switch req.IsDeleted {
 	case api.ClientsMS_Bool_IS_TRUE:
 		if cnt > 0 {
-			q += " AND note_isdeleted = true"
+			q += " AND isdeleted = true"
 		} else {
-			q += " WHERE note_isdeleted = true"
+			q += " WHERE isdeleted = true"
 		}
 		cnt++
 	case api.ClientsMS_Bool_IS_FALSE:
 		if cnt > 0 {
-			q += " AND note_isdeleted = false"
+			q += " AND isdeleted = false"
 		} else {
-			q += " WHERE note_isdeleted = false"
+			q += " WHERE isdeleted = false"
 		}
 		cnt++
 	}

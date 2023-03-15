@@ -1,4 +1,4 @@
-package address_types
+package addresses_types
 
 import (
 	"clients_ms/internal/api"
@@ -312,16 +312,16 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 
 	// ID
 	if req.Id != 0 {
-		q += fmt.Sprintf(" WHERE address_type_id IN (%v)", req.Id)
+		q += fmt.Sprintf(" WHERE id IN (%v)", req.Id)
 		cnt++
 	}
 
 	// CODE
 	if req.Code != "" {
 		if cnt > 0 {
-			q += " AND address_type_code ILIKE '%" + req.Code + "%'"
+			q += " AND code ILIKE '%" + req.Code + "%'"
 		} else {
-			q += " WHERE address_type_code ILIKE '%" + req.Code + "%'"
+			q += " WHERE code ILIKE '%" + req.Code + "%'"
 		}
 		cnt++
 	}
@@ -329,9 +329,9 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	// NAME
 	if req.Name != "" {
 		if cnt > 0 {
-			q += " AND address_type_name ILIKE '%" + req.Name + "%'"
+			q += " AND name ILIKE '%" + req.Name + "%'"
 		} else {
-			q += " WHERE address_type_name ILIKE '%" + req.Name + "%'"
+			q += " WHERE name ILIKE '%" + req.Name + "%'"
 		}
 		cnt++
 	}
@@ -339,9 +339,9 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	// COMMENT
 	if req.Comment != "" {
 		if cnt > 0 {
-			q += " AND address_type_comment ILIKE '%" + req.Comment + "%'"
+			q += " AND comment ILIKE '%" + req.Comment + "%'"
 		} else {
-			q += " WHERE address_type_comment ILIKE '%" + req.Comment + "%'"
+			q += " WHERE comment ILIKE '%" + req.Comment + "%'"
 		}
 		cnt++
 	}
@@ -349,16 +349,16 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	// Normalising
 	if req.NeedsNormalizing == api.ClientsMS_Bool_IS_TRUE {
 		if cnt > 0 {
-			q += " AND address_type_needs_normalizing = true"
+			q += " AND needs_normalizing = true"
 		} else {
-			q += " WHERE address_type_needs_normalizing = true"
+			q += " WHERE needs_normalizing = true"
 		}
 		cnt++
 	} else if req.NeedsNormalizing == api.ClientsMS_Bool_IS_FALSE {
 		if cnt > 0 {
-			q += " AND address_type_needs_normalizing = false"
+			q += " AND needs_normalizing = false"
 		} else {
-			q += " WHERE address_type_needs_normalizing = false"
+			q += " WHERE needs_normalizing = false"
 		}
 		cnt++
 	}
@@ -366,16 +366,16 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	// DaData cleaning
 	if req.NeedsCleaning == api.ClientsMS_Bool_IS_TRUE {
 		if cnt > 0 {
-			q += " AND address_type_needs_cleaning = true"
+			q += " AND needs_cleaning = true"
 		} else {
-			q += " WHERE address_type_needs_cleaning = true"
+			q += " WHERE needs_cleaning = true"
 		}
 		cnt++
 	} else if req.NeedsCleaning == api.ClientsMS_Bool_IS_FALSE {
 		if cnt > 0 {
-			q += " AND address_type_needs_cleaning = false"
+			q += " AND needs_cleaning = false"
 		} else {
-			q += " WHERE address_type_needs_cleaning = false"
+			q += " WHERE needs_cleaning = false"
 		}
 		cnt++
 	}
@@ -383,16 +383,16 @@ func addWhereToQuerySelectAddressesTypes(q string, req *api.RequestAddressType) 
 	// Isdeleted
 	if req.IsDeleted == api.ClientsMS_Bool_IS_TRUE {
 		if cnt > 0 {
-			q += " AND address_type_isdeleted = true"
+			q += " AND isdeleted = true"
 		} else {
-			q += " WHERE address_type_isdeleted = true"
+			q += " WHERE isdeleted = true"
 		}
 		cnt++
 	} else if req.IsDeleted == api.ClientsMS_Bool_IS_FALSE {
 		if cnt > 0 {
-			q += " AND address_type_isdeleted = false"
+			q += " AND isdeleted = false"
 		} else {
-			q += " WHERE address_type_isdeleted = false"
+			q += " WHERE isdeleted = false"
 		}
 		cnt++
 	}

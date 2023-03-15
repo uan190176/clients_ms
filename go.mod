@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.2.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/uan190176/fstorage v0.0.0-20230310060159-9550123ee1a8
+	github.com/uan190176/postservice v0.0.0-20230312162550-3ebe43ffc1b1
 	github.com/uan190176/statuses v1.0.0-rc4
 	golang.org/x/net v0.8.0
 	google.golang.org/grpc v1.53.0

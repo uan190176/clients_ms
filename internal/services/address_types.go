@@ -3,7 +3,7 @@ package services
 import (
 	"clients_ms/internal/api"
 	hlp "clients_ms/internal/helpers"
-	stg "clients_ms/internal/storage/address_types"
+	stg "clients_ms/internal/storage/addresses_types"
 	cfg "clients_ms/pkg/config"
 	lgr "clients_ms/pkg/logger"
 	"context"

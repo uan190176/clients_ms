@@ -20,88 +20,11 @@ LogPath = "clients_ms.log"
 PostToken = "2jfrbrey4fXCX6T8LLJeXL0roRd0Bceq"
 PostAuth = "dmlzdWFsdGVjaEBtYWlsLnJ1OnZpc3VhbCEzMjEh"
 URL = "https://otpravka-api.pochta.ru/1.0/clean/address"
+ValidQualityCodes = "GOOD, ON_DEMAND, POSTAL_BOX"
+ValidValidationCodes = "CONFIRMED_MANUALLY, VALIDATED, OVERRIDDEN"
 
-#Коды качества нормализации адреса API Почта России
-#https://otpravka.pochta.ru/specification#/enums-clean-address-quality
-[Addresses.Quality]
-GOOD        = "Пригоден для почтовой рассылки" #true
-ON_DEMAND   = "До востребования" #true
-POSTAL_BOX  = "Абонентский ящик" #true
-UNDEF_01    = "Не определен регион"
-UNDEF_02    = "Не определен город или населенный пункт"
-UNDEF_03    = "Не определена улица"
-UNDEF_04    = "Не определен номер дома"
-UNDEF_05    = "Не определена квартира/офис" #true
-UNDEF_06    = "Не определен"
-UNDEF_07    = "Иностранный адрес"
-
-#Коды проверки нормализации адреса API Почта России
-#https://otpravka.pochta.ru/specification#/enums-clean-address-validation
-[Addresses.Validation]
-CONFIRMED_MANUALLY                          = "Подтверждено контролером" #true
-VALIDATED                                   = "Уверенное распознавание" #true
-OVERRIDDEN                                  = "Распознан: адрес был перезаписан в справочнике" #true
-NOT_VALIDATED_HAS_UNPARSED_PARTS            = "На проверку, неразобранные части"
-NOT_VALIDATED_HAS_ASSUMPTION                = "На проверку, предположение"
-NOT_VALIDATED_HAS_NO_MAIN_POINTS            = "На проверку, нет основных частей"
-NOT_VALIDATED_HAS_NUMBER_STREET_ASSUMPTION  = "На проверку, предположение по улице"
-NOT_VALIDATED_HAS_NO_KLADR_RECORD           = "На проверку, нет в КЛАДР"
-NOT_VALIDATED_HOUSE_WITHOUT_STREET_OR_NP    = "На проверку, нет улицы или населенного пункта"
-NOT_VALIDATED_HOUSE_EXTENSION_WITHOUT_HOUSE = "На проверку, нет дома"
-NOT_VALIDATED_HAS_AMBI                      = "На проверку, неоднозначность"
-NOT_VALIDATED_EXCEDED_HOUSE_NUMBER          = "На проверку, большой номер дома"
-NOT_VALIDATED_INCORRECT_HOUSE               = "На проверку, некорректный дом"
-NOT_VALIDATED_INCORRECT_HOUSE_EXTENSION     = "На проверку, некорректное расширение дома"
-NOT_VALIDATED_FOREIGN                       = "Иностранный адрес"
-NOT_VALIDATED_DICTIONARY                    = "На проверку, не по справочнику"
-
+#API сервиса DaData
 [DaDataAPI]
 APIKey    = "2b8d6c68f76350081563b9676909019fccea0f49"
 SecretKey = "b6df53884a921d97a0d114462adb74a2549bd295"
 LiveTime  = 48
-
-#Код точности координат qc_geo
-[Addresses.QC_geo]
-0 = "Точные координаты"
-1 = "Ближайший дом"
-2 = "Улица"
-3 = "Населенный пункт"
-4 = "Город"
-5 = "Координаты не определены"
-
-#Код пригодности к рассылке qc_complete
-[Addresses.QC_complete]
-0 = "Пригоден для почтовой рассылки"
-10 = "Дома нет в ФИАС"
-5 = "Нет квартиры. Подходит для юридических лиц или частных владений"
-8 = "До почтового отделения — абонентский ящик или адрес до востребования. Подходит для писем, но не для курьерской доставки."
-9 = "Сначала проверьте, правильно ли Дадата разобрала исходный адрес"
-1 = "Нет региона"
-2 = "Нет города"
-3 = "Нет улицы"
-4 = "Нет дома"
-6 = "Адрес неполный"
-7 = "Иностранный адрес"
-11 = "Указана несуществующая квартира, либо в доме не должно быть квартир"
-12 = "Нет квартиры. В этом доме должна быть указана квартира."
-
-#Признак наличия дома в ФИАС qc_house и код точности координат qc_geo
-[Addresses.QC_house]
-2 = "Дом найден в ФИАС" #qc_house=1 & qc_geo=any
-10 = "Дом не найден в ФИАС и на картах" #qc_house=10 & qc_geo>=2
-11 = "Дом не найден в ФИАС, но есть на картах" #qc_house=10 & qc_geo=0
-12 = "Дом не найден в ФИАС, но есть похожий на картах" #qc_house=10 & qc_geo = 1
-
-#Код проверки качества
-[Addresses.QC]
-0 = "Адрес распознан уверенно"
-2 = "Адрес пустой или заведомо мусорный"
-1 = "В исходном адресе недостающие, либо лишние части"
-3 = "Есть альтернативные варианты, необходимо точнее указать адрес"
-
-#Код пригодности к доставке (ДаДата+Почта)
-[Addresses.SS_code]
-0 = "Адрес пригоден для доставки по данным двух сервисов (ДаДата и Почта России)"
-1 = "Адрес пригоден для доставки по данным только одного сервиса (ДаДата)"
-2 = "Адрес пригоден для доставки по данным только одного сервиса (Почта России)"
-3 = "Адрес не пригоден для доставки по данным двух сервисов (ДаДата и Почта России)"

@@ -33,6 +33,12 @@ github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/uan190176/fstorage v0.0.0-20230310060159-9550123ee1a8 h1:ruTs/Kf/LdPL9GA8MgSsx1bmISO+lNcIwczeM/DxZMg=
 github.com/uan190176/fstorage v0.0.0-20230310060159-9550123ee1a8/go.mod h1:Ha4vSAp2vRiNRC/lRW+9F3Py4/ukO4YmQ5V5LXkqXNc=
+github.com/uan190176/postservice v0.0.0-20230312132618-3d7fbb4f1cf8 h1:erYgvzCo5DunfSd0CapXEBdiihg8/FVRuvC+gwvMfZ8=
+github.com/uan190176/postservice v0.0.0-20230312132618-3d7fbb4f1cf8/go.mod h1:n4cclrVYYSUeduOqmqbgcZhKrpa8B/RpmDLrc+FyXYY=
+github.com/uan190176/postservice v0.0.0-20230312133714-173099a8a59d h1:D0vhJoecYmCznleyJovM6GN06+OZKZPCA61WS1gqnpc=
+github.com/uan190176/postservice v0.0.0-20230312133714-173099a8a59d/go.mod h1:n4cclrVYYSUeduOqmqbgcZhKrpa8B/RpmDLrc+FyXYY=
+github.com/uan190176/postservice v0.0.0-20230312162550-3ebe43ffc1b1 h1:T3k8XcdaYdeTMwhyGAtrDeQuWdgXl8Qby1z0KaY9Wr4=
+github.com/uan190176/postservice v0.0.0-20230312162550-3ebe43ffc1b1/go.mod h1:n4cclrVYYSUeduOqmqbgcZhKrpa8B/RpmDLrc+FyXYY=
 github.com/uan190176/statuses v1.0.0-rc4 h1:gahKttlL6qehPVDJ+RwqKUHvyYkRDS5xQK6jaMRgiKk=
 github.com/uan190176/statuses v1.0.0-rc4/go.mod h1:hSh9ZhnVwsIBmzgeNudSwz3P1nt5PZDhxA7doZ+oty0=
 golang.org/x/crypto v0.7.0 h1:AvwMYaRytfdeVt3u6mLaxYtErKYjxA2OXjJ1HHq6t3A=

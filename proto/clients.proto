@@ -58,6 +58,14 @@ enum ClientsMS_NotesOrder {
   BY_NOTE_UPDATED_AT = 2;
 }
 
+//Addresses
+enum ClientsMS_AddressesOrder {
+  BY_ADDRESS_ID = 0;
+  BY_ADDRESS_ADDRESS = 1;
+  BY_ADDRESS_CREATED_AT = 2;
+  BY_ADDRESS_UPDATED_AT = 3;
+}
+
 //***********************************************************************
 // SERVICES
 //***********************************************************************
@@ -82,11 +90,16 @@ service ClientsServices {
   rpc UpdateDeliveriesDeletionFlags(RequestDeliveriesDeletionFlags) returns (ResponseDeliveries) {} //pass
 
   // Notes
-  rpc GetNotes(RequestNote) returns (ResponseNotes) {} //
+  rpc GetNotes(RequestNote) returns (ResponseNotes) {} //pass
   rpc CreateNote(RequestNote) returns (ResponseNotes) {} //pass
   rpc UpdateNote(RequestNote) returns (ResponseNotes) {} //pass
   rpc UpdateNotesDeletionFlags(RequestNotesDeletionFlags) returns (ResponseNotes) {} //pass
 
+  // Addresses
+  rpc GetAddresses(RequestAddress) returns (ResponseAddresses) {} //pass
+  rpc CreateAddress(RequestAddress) returns (ResponseAddresses) {} //pass
+  rpc UpdateAddress(RequestAddress) returns (ResponseAddresses) {} //pass
+  rpc UpdateAddressesDeletionFlags(RequestAddressesDeletionFlags) returns (ResponseAddresses) {} //pass
 }
 
 
@@ -116,7 +129,6 @@ message RequestCountriesDeletionFlags {
   ClientsMS_Bool IsDeleted = 3;
   repeated fixed64 Ids = 4;
 }
-
 
 // =============== //
 // Address types   //
@@ -180,6 +192,37 @@ message RequestNotesDeletionFlags {
   ClientsMS_Bool IsDeleted = 3;
   repeated fixed64 Ids = 4;
 }
+
+// =============== //
+//   Addresses     //
+// =============== //
+message RequestAddress {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  fixed64 Id = 3;
+  string Address = 4;
+  fixed64 AddressTypeId = 5;
+  fixed64 DeliveryId = 6;
+  fixed64 ClientId = 7;
+  string PostCode = 8;
+  string Timezone = 9;
+  fixed64 CountryId = 10;
+  string Comment = 11;
+  ClientsMS_Bool IsQualityByDadata = 12;
+  ClientsMS_Bool IsValidByPost = 13;
+  ClientsMS_Bool IsLast = 14;
+  ClientsMS_Bool IsDeleted = 15;
+  ClientsMS_AddressesOrder Order = 16;
+  ClientsMS_OrderType OrderType = 17;
+  string AddressJson = 18;
+}
+message RequestAddressesDeletionFlags {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  ClientsMS_Bool IsDeleted = 3;
+  repeated fixed64 Ids = 4;
+}
+
 
 //***********************************************************************
 // Responses
@@ -289,7 +332,6 @@ message ResponseDeliveries {
   ClientsMS_Status Status = 2;
 }
 
-
 // =============== //
 //   Notes         //
 // =============== //
@@ -319,3 +361,60 @@ message ResponseNotes {
   repeated Note Notes = 1;
   ClientsMS_Status Status = 2;
 }
+
+// =============== //
+//   Addresses     //
+// =============== //
+message Address {
+  // @gotags: db:"address_id"
+  fixed64 Id = 1;
+  // @gotags: db:"address_client_id"
+  fixed64 ClientId = 2;
+  // @gotags: db:"address_delivery_id"
+  fixed64 DeliveryId = 3;
+  // @gotags: db:"address_delivery_name"
+  string DeliveryName = 4;
+  // @gotags: db:"address_address"
+  string Address = 5;
+  // @gotags: db:"address_address_type_id"
+  fixed64 AddressTypeId = 6;
+  // @gotags: db:"address_address_type_name"
+  string AddressTypeName = 7;
+  // @gotags: db:"address_postal_code"
+  string PostalCode = 8;
+  // @gotags: db:"address_timezone"
+  string Timezone = 9;
+  // @gotags: db:"address_country_id"
+  fixed64 CountryId = 10;
+  // @gotags: db:"address_country_name"
+  string CountryName = 11;
+  // @gotags: db:"address_isquality_by_dadata"
+  bool IsQualityByDadata = 12;
+  // @gotags: db:"address_isvalid_by_post"
+  bool IsValidByPost = 13;
+  // @gotags: db:"address_islast"
+  bool IsLast = 14;
+  // @gotags: db:"address_isdeleted"
+  bool IsDeleted = 15;
+  // @gotags: db:"address_created_at"
+  string CreatedAt = 16;
+  // @gotags: db:"address_created_by"
+  fixed64 CreatedBy = 17;
+  // @gotags: db:"address_created_by_name"
+  string CreatedByName = 18;
+  // @gotags: db:"address_updated_at"
+  string UpdatedAt = 19;
+  // @gotags: db:"address_updated_by"
+  fixed64 UpdatedBy = 20;
+  // @gotags: db:"address_updated_by_name"
+  string UpdatedByName = 21;
+  // @gotags: db:"address_address_json"
+  string AddressJson = 22;
+  // @gotags: db:"address_comment"
+  string Comment = 23;
+}
+message ResponseAddresses {
+  repeated Address Addresses = 1;
+  ClientsMS_Status Status = 2;
+}
+

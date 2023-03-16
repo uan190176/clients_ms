@@ -16,7 +16,8 @@ type Config struct {
 	} `toml:"MicroServices"`
 
 	Database struct {
-		URL string `toml:"URL"`
+		URL   string `toml:"URL"`
+		Limit int    `toml:"Limit"`
 	} `toml:"Database"`
 	Log struct {
 		LogLevel  string `toml:"LogLevel"`

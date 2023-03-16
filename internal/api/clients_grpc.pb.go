@@ -47,6 +47,11 @@ type ClientsServicesClient interface {
 	CreateAddress(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error)
 	UpdateAddress(ctx context.Context, in *RequestAddress, opts ...grpc.CallOption) (*ResponseAddresses, error)
 	UpdateAddressesDeletionFlags(ctx context.Context, in *RequestAddressesDeletionFlags, opts ...grpc.CallOption) (*ResponseAddresses, error)
+	// Clients
+	GetClients(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error)
+	CreateClient(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error)
+	UpdateClient(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error)
+	UpdateClientsDeletionFlags(ctx context.Context, in *RequestClientsDeletionFlags, opts ...grpc.CallOption) (*ResponseClients, error)
 }
 
 type clientsServicesClient struct {
@@ -237,6 +242,42 @@ func (c *clientsServicesClient) UpdateAddressesDeletionFlags(ctx context.Context
 	return out, nil
 }
 
+func (c *clientsServicesClient) GetClients(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error) {
+	out := new(ResponseClients)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/GetClients", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) CreateClient(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error) {
+	out := new(ResponseClients)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/CreateClient", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateClient(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error) {
+	out := new(ResponseClients)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateClient", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientsServicesClient) UpdateClientsDeletionFlags(ctx context.Context, in *RequestClientsDeletionFlags, opts ...grpc.CallOption) (*ResponseClients, error) {
+	out := new(ResponseClients)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/UpdateClientsDeletionFlags", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClientsServicesServer is the server API for ClientsServices service.
 // All implementations must embed UnimplementedClientsServicesServer
 // for forward compatibility
@@ -266,6 +307,11 @@ type ClientsServicesServer interface {
 	CreateAddress(context.Context, *RequestAddress) (*ResponseAddresses, error)
 	UpdateAddress(context.Context, *RequestAddress) (*ResponseAddresses, error)
 	UpdateAddressesDeletionFlags(context.Context, *RequestAddressesDeletionFlags) (*ResponseAddresses, error)
+	// Clients
+	GetClients(context.Context, *RequestClient) (*ResponseClients, error)
+	CreateClient(context.Context, *RequestClient) (*ResponseClients, error)
+	UpdateClient(context.Context, *RequestClient) (*ResponseClients, error)
+	UpdateClientsDeletionFlags(context.Context, *RequestClientsDeletionFlags) (*ResponseClients, error)
 	mustEmbedUnimplementedClientsServicesServer()
 }
 
@@ -332,6 +378,18 @@ func (UnimplementedClientsServicesServer) UpdateAddress(context.Context, *Reques
 }
 func (UnimplementedClientsServicesServer) UpdateAddressesDeletionFlags(context.Context, *RequestAddressesDeletionFlags) (*ResponseAddresses, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAddressesDeletionFlags not implemented")
+}
+func (UnimplementedClientsServicesServer) GetClients(context.Context, *RequestClient) (*ResponseClients, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetClients not implemented")
+}
+func (UnimplementedClientsServicesServer) CreateClient(context.Context, *RequestClient) (*ResponseClients, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateClient not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateClient(context.Context, *RequestClient) (*ResponseClients, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateClient not implemented")
+}
+func (UnimplementedClientsServicesServer) UpdateClientsDeletionFlags(context.Context, *RequestClientsDeletionFlags) (*ResponseClients, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateClientsDeletionFlags not implemented")
 }
 func (UnimplementedClientsServicesServer) mustEmbedUnimplementedClientsServicesServer() {}
 
@@ -706,6 +764,78 @@ func _ClientsServices_UpdateAddressesDeletionFlags_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClientsServices_GetClients_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestClient)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).GetClients(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/GetClients",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).GetClients(ctx, req.(*RequestClient))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_CreateClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestClient)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).CreateClient(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/CreateClient",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).CreateClient(ctx, req.(*RequestClient))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestClient)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateClient(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateClient",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateClient(ctx, req.(*RequestClient))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClientsServices_UpdateClientsDeletionFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestClientsDeletionFlags)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).UpdateClientsDeletionFlags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/UpdateClientsDeletionFlags",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).UpdateClientsDeletionFlags(ctx, req.(*RequestClientsDeletionFlags))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClientsServices_ServiceDesc is the grpc.ServiceDesc for ClientsServices service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -792,6 +922,22 @@ var ClientsServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateAddressesDeletionFlags",
 			Handler:    _ClientsServices_UpdateAddressesDeletionFlags_Handler,
+		},
+		{
+			MethodName: "GetClients",
+			Handler:    _ClientsServices_GetClients_Handler,
+		},
+		{
+			MethodName: "CreateClient",
+			Handler:    _ClientsServices_CreateClient_Handler,
+		},
+		{
+			MethodName: "UpdateClient",
+			Handler:    _ClientsServices_UpdateClient_Handler,
+		},
+		{
+			MethodName: "UpdateClientsDeletionFlags",
+			Handler:    _ClientsServices_UpdateClientsDeletionFlags_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

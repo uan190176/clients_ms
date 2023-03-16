@@ -1,0 +1,74 @@
+syntax = "proto3";
+option go_package = "internal/api";
+package normalize_address;
+
+//***********************************************************************
+// Enums
+//***********************************************************************
+
+// ============== //
+// Boolean fields //
+// ============== //
+
+enum NormalizeAddressMS_Bool {
+  IS_ANY = 0;
+  IS_FALSE = 1;
+  IS_TRUE = 2;
+}
+
+//***********************************************************************
+// SERVICES
+//***********************************************************************
+service NormalizeAddressServicesServer {
+  rpc NormalizeAddress(RequestNormalizeAddress) returns (ResponseNormalizeAddress) {}
+}
+
+//***********************************************************************
+// Requests
+//***********************************************************************
+message RequestNormalizeAddress {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  string Address = 3;
+  fixed64 AddressTypeId = 4;
+}
+
+//***********************************************************************
+// Responses
+//***********************************************************************
+
+// =============== //
+//   Status        //
+// =============== //
+message NormalizeAddressMS_Status {
+  int32 Code = 1;
+  string Description = 2;
+}
+
+// ================== //
+// Normalized address //
+// ================== //
+message NormalizeCodes {
+  string Qc = 1;
+  string QcComplete = 2;
+  string QcGeo = 3;
+  string QcHouse = 4;
+  string PostQuality = 5;
+  string PostValid = 6;
+}
+
+message NormalizedAddress {
+  string AddressOriginal = 1;
+  string AddressNormalized = 2;
+  string AddressJson = 3;
+  string PostalCode = 4;
+  string Timezone = 5;
+  bool IsQualityByDadata = 6;
+  bool IsValidByPost = 7;
+  NormalizeCodes NormalizeCodes = 8;
+}
+
+message ResponseNormalizeAddress {
+  NormalizedAddress NormalizedAddress = 1;
+  NormalizeAddressMS_Status Status = 3;
+}

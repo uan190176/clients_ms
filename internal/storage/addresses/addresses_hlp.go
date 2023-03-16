@@ -4,7 +4,6 @@ import (
 	"clients_ms/internal/api"
 	hlp "clients_ms/internal/helpers"
 	lgr "clients_ms/pkg/logger"
-	"context"
 	"fmt"
 	st "github.com/uan190176/statuses"
 	"strings"
@@ -14,7 +13,7 @@ import (
 // Check required fields
 //**************************************************************
 
-// CheckRequiredFieldsAddressesSelect - checks required fields to notes INSERT
+// CheckRequiredFieldsAddressesSelect - checks required fields to address SELECT
 func CheckRequiredFieldsAddressesSelect(req *api.RequestAddress) st.ResponseStatus {
 	lgr.LOG.Info("-->> ", "addresses.CheckRequiredFieldsAddressesSelect()")
 
@@ -29,7 +28,7 @@ func CheckRequiredFieldsAddressesSelect(req *api.RequestAddress) st.ResponseStat
 	return st.GetStatus(100)
 }
 
-// CheckRequiredFieldsAddressInsert - checks required fields to notes INSERT
+// CheckRequiredFieldsAddressInsert - checks required fields to address INSERT
 func CheckRequiredFieldsAddressInsert(req *api.RequestAddress) st.ResponseStatus {
 	lgr.LOG.Info("-->> ", "addresses.CheckRequiredFieldsAddressInsert()")
 
@@ -79,7 +78,7 @@ func CheckRequiredFieldsAddressInsert(req *api.RequestAddress) st.ResponseStatus
 	return st.GetStatus(100)
 }
 
-// CheckRequiredFieldsAddressUpdate - checks required fields to notes INSERT
+// CheckRequiredFieldsAddressUpdate - checks required fields to address UPDATE
 func CheckRequiredFieldsAddressUpdate(req *api.RequestAddress) st.ResponseStatus {
 	lgr.LOG.Info("-->> ", "addresses.CheckRequiredFieldsAddressUpdate()")
 
@@ -130,25 +129,6 @@ func CheckRequiredFieldsAddressesDeletionFlagUpdate(req *api.RequestAddressesDel
 	return st.GetStatus(100)
 }
 
-// CheckRequiredFieldsAddressNormalize - checks required fields to normalize address
-func CheckRequiredFieldsAddressNormalize(req *api.RequestAddress) st.ResponseStatus {
-	lgr.LOG.Info("-->> ", "addresses.CheckRequiredFieldsAddressNormalize()")
-	//Address
-	lgr.LOG.Info("_ACTION_: ", "checking Address")
-	if req.Address == "" {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " Address", " must contain a value"))
-		return st.GetStatus(401, " Address", " must contain a value")
-	}
-	//AddressTypeId
-	lgr.LOG.Info("_ACTION_: ", "checking AddressTypeId")
-	if req.AddressTypeId == 0 {
-		lgr.LOG.Warn("_WARN_: ", st.GetStatus(401, " AddressTypeId", " must contain a value"))
-		return st.GetStatus(401, " AddressTypeId", " must contain a value")
-	}
-	lgr.LOG.Info("<<-- ", "addresses.CheckRequiredFieldsAddressNormalize()")
-	return st.GetStatus(100)
-}
-
 //**************************************************************
 // Create queries
 //**************************************************************
@@ -163,11 +143,11 @@ func createQueryAddressesSelect() string {
 }
 
 // CreateQueryAddressInsert - returns query to INSERT
-func CreateQueryAddressInsert(ctx context.Context, req *api.RequestAddress) (string, st.ResponseStatus) {
+func CreateQueryAddressInsert(req *api.RequestAddress) (string, st.ResponseStatus) {
 	lgr.LOG.Info("-->> ", "addresses.CreateQueryAddressInsert()")
 
-	q := fmt.Sprintf("INSERT INTO addresses_ref (address, address_json, isquality_by_dadata, isvalid_by_post, delivery_id, address_type_id, client_id, country_id, comment, created_by) "+
-		"VALUES ('%s', '%s', %v, %v, %d, %d, %d, %d, '%s', %d) RETURNING ", req.Address, req.AddressJson, req.IsQualityByDadata, req.IsValidByPost, req.DeliveryId, req.AddressTypeId, req.ClientId, req.CountryId, req.Comment, req.AuthorId)
+	q := fmt.Sprintf("INSERT INTO addresses_ref (address, address_json, isquality_by_dadata, isvalid_by_post, delivery_id, address_type_id, client_id, country_id, comment, created_by, delayed_normalization) "+
+		"VALUES ('%s', '%s', %v, %v, %d, %d, %d, %d, '%s', %d, %t) RETURNING ", req.Address, req.AddressJson, req.IsQualityByDadata, req.IsValidByPost, req.DeliveryId, req.AddressTypeId, req.ClientId, req.CountryId, req.Comment, req.AuthorId, req.DelayedNormalization)
 
 	q += createViewAddresses()
 
@@ -318,7 +298,8 @@ func createViewAddresses() string {
     		( SELECT u.fullname FROM users_ref u WHERE u.id = updated_by ) AS address_updated_by_name,
     		isdeleted AS address_isdeleted,
 			concat(address_json, '') AS address_address_json,
-			concat(comment, '') AS address_comment`
+			concat(comment, '') AS address_comment,
+			delayed_normalization AS address_delayed_normalization`
 }
 
 //**************************************************************
@@ -458,15 +439,15 @@ func addOrderToQueryAddressesSelect(q string, req *api.RequestAddress) string {
 	strOrder := ""
 	switch req.Order {
 	case api.ClientsMS_AddressesOrder_BY_ADDRESS_ID:
-		strOrder = " ORDER BY address_id"
+		strOrder = " ORDER BY id"
 	case api.ClientsMS_AddressesOrder_BY_ADDRESS_ADDRESS:
-		strOrder = " ORDER BY address_address"
+		strOrder = " ORDER BY address"
 	case api.ClientsMS_AddressesOrder_BY_ADDRESS_CREATED_AT:
-		strOrder = " ORDER BY address_created_at"
+		strOrder = " ORDER BY created_at"
 	case api.ClientsMS_AddressesOrder_BY_ADDRESS_UPDATED_AT:
-		strOrder = " ORDER BY address_updated_at"
+		strOrder = " ORDER BY updated_at"
 	default:
-		strOrder = " ORDER BY address_created_at"
+		strOrder = " ORDER BY created_at"
 	}
 
 	strDirection := ""

@@ -66,6 +66,14 @@ enum ClientsMS_AddressesOrder {
   BY_ADDRESS_UPDATED_AT = 3;
 }
 
+//Clients
+enum ClientsMS_ClientsOrder {
+  BY_CLIENT_ID = 0;
+  BY_CLIENT_NAME = 1;
+  BY_CLIENT_CREATED_AT = 2;
+  BY_CLIENT_UPDATED_AT = 3;
+}
+
 //***********************************************************************
 // SERVICES
 //***********************************************************************
@@ -100,6 +108,12 @@ service ClientsServices {
   rpc CreateAddress(RequestAddress) returns (ResponseAddresses) {} //pass
   rpc UpdateAddress(RequestAddress) returns (ResponseAddresses) {} //pass
   rpc UpdateAddressesDeletionFlags(RequestAddressesDeletionFlags) returns (ResponseAddresses) {} //pass
+
+  //Clients
+  rpc GetClients(RequestClient) returns (ResponseClients) {} //
+  rpc CreateClient(RequestClient) returns (ResponseClients) {} //
+  rpc UpdateClient(RequestClient) returns (ResponseClients) {} //
+  rpc UpdateClientsDeletionFlags(RequestClientsDeletionFlags) returns (ResponseClients) {} //
 }
 
 
@@ -215,6 +229,7 @@ message RequestAddress {
   ClientsMS_AddressesOrder Order = 16;
   ClientsMS_OrderType OrderType = 17;
   string AddressJson = 18;
+  bool DelayedNormalization = 19;
 }
 message RequestAddressesDeletionFlags {
   string AuthToken = 1;
@@ -223,6 +238,34 @@ message RequestAddressesDeletionFlags {
   repeated fixed64 Ids = 4;
 }
 
+// =============== //
+//   Clients       //
+// =============== //
+message RequestClient {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  fixed64 Id = 3;
+  string FirstName = 4;
+  string MiddleName = 5;
+  string LastName = 6;
+  string FullName = 7;
+  fixed64 RegNumber = 8;
+  string Phone = 9;
+  string Email = 10;
+  string Comment = 11;
+  string Address = 12;
+  string PostalCode = 13;
+  ClientsMS_Bool IsBad = 14;
+  ClientsMS_Bool IsDeleted = 15;
+  ClientsMS_ClientsOrder Order = 16;
+  ClientsMS_OrderType OrderType = 17;
+}
+message RequestClientsDeletionFlags {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
+  ClientsMS_Bool IsDeleted = 3;
+  repeated fixed64 Ids = 4;
+}
 
 //***********************************************************************
 // Responses
@@ -412,9 +455,61 @@ message Address {
   string AddressJson = 22;
   // @gotags: db:"address_comment"
   string Comment = 23;
+  // @gotags: db:"address_delayed_normalization"
+  bool DelayedNormalization = 24;
 }
 message ResponseAddresses {
   repeated Address Addresses = 1;
   ClientsMS_Status Status = 2;
 }
 
+// =============== //
+//   Clients      //
+// =============== //
+
+message Client {
+  // @gotags: db:"client_id"
+  fixed64 Id = 1;
+  // @gotags: db:"client_firstname"
+  string FirstName = 2;
+  // @gotags: db:"client_middlename"
+  string MiddleName = 3;
+  // @gotags: db:"client_lastname"
+  string LastName = 4;
+  // @gotags: db:"client_fullname"
+  string FullName = 5;
+  // @gotags: db:"client_regnumber"
+  fixed64 RegNumber = 6;
+  // @gotags: db:"client_phone"
+  string Phone = 7;
+  // @gotags: db:"client_email"
+  string Email = 8;
+  // @gotags: db:"client_comment"
+  string Comment = 9;
+  // @gotags: db:"client_created_at"
+  string CreatedAt = 10;
+  // @gotags: db:"client_created_by"
+  fixed64 CreatedBy = 11;
+  // @gotags: db:"client_created_by_name"
+  string CreatedByName = 12;
+  // @gotags: db:"client_updated_at"
+  string UpdatedAt = 13;
+  // @gotags: db:"client_updated_by"
+  fixed64 UpdatedBy = 14;
+  // @gotags: db:"client_updated_by_name"
+  string UpdatedByName = 15;
+  // @gotags: db:"client_isdeleted"
+  bool IsDeleted = 16;
+  // @gotags: db:"client_isbad"
+  bool IsBad = 17;
+  // @gotags: db:"client_last_address_id"
+  fixed64 LastAddressId = 18;
+  // @gotags: db:"client_last_address"
+  string LastAddress = 19;
+  // @gotags: db:"client_found_address"
+  string FoundAddress = 20;
+}
+message ResponseClients {
+  repeated Client Clients = 1;
+  ClientsMS_Status Status = 2;
+}

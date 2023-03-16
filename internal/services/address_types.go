@@ -10,7 +10,7 @@ import (
 	st "github.com/uan190176/statuses"
 )
 
-const addressTypesTableName = "public.address_types_ref"
+const addressTypesTableName = "public.addresses_types_ref"
 
 // GetAddressesTypes - returns address types
 func (s *GrpcClientsServer) GetAddressesTypes(ctx context.Context, req *api.RequestAddressType) (*api.ResponseAddressesTypes, error) {

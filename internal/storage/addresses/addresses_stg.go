@@ -295,24 +295,3 @@ func UpdateAddressesDeletionFlags(ctx context.Context, req *api.RequestAddresses
 	lgr.LOG.Warn("_WARN_: ", st.GetStatus(301))
 	return nil, st.GetStatus(301)
 }
-
-// NormalizeAddress - normalizes address by dadata and post service
-func NormalizeAddress(ctx context.Context, req *api.RequestNormalizeAddress) (*api.NormalizedAddress, st.ResponseStatus) {
-	lgr.LOG.Info("-->> ", "addresses.NormalizeAddress()")
-	needsCleaning, needsNormalizing, stat := GetValidationFlags(ctx, req)
-	if stat.Code > 100 {
-		lgr.LOG.Warn("_WARN_: ", stat)
-		return nil, stat
-	}
-
-	//Clean address
-	if needsCleaning {
-
-	}
-
-	//Normalize address
-	if needsNormalizing {
-
-	}
-	return nil, st.ResponseStatus{}
-}

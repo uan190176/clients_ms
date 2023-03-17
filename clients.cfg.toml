@@ -16,16 +16,3 @@ LogLevel = "debug"
 LogOutput = "file|stdout"
 LogPath = "clients_ms.log"
 
-#API Почты РФ для нормализации адресов
-[PostAPI]
-PostToken = "2jfrbrey4fXCX6T8LLJeXL0roRd0Bceq"
-PostAuth = "dmlzdWFsdGVjaEBtYWlsLnJ1OnZpc3VhbCEzMjEh"
-URL = "https://otpravka-api.pochta.ru/1.0/clean/address"
-ValidQualityCodes = "GOOD, ON_DEMAND, POSTAL_BOX"
-ValidValidationCodes = "CONFIRMED_MANUALLY, VALIDATED, OVERRIDDEN"
-
-#API сервиса DaData
-[DaDataAPI]
-APIKey    = "2b8d6c68f76350081563b9676909019fccea0f49"
-SecretKey = "b6df53884a921d97a0d114462adb74a2549bd295"
-LiveTime  = 48

@@ -24,18 +24,6 @@ type Config struct {
 		LogOutput string `toml:"LogOutput"`
 		LogPath   string `toml:"LogPath"`
 	} `toml:"Log"`
-	PostAPI struct {
-		PostToken            string `toml:"PostToken"`
-		PostAuth             string `toml:"PostAuth"`
-		URL                  string `toml:"URL"`
-		ValidQualityCodes    string `toml:"ValidQualityCodes"`
-		ValidValidationCodes string `toml:"ValidValidationCodes"`
-	} `toml:"PostAPI"`
-	DaDataAPI struct {
-		APIKey    string `toml:"APIKey"`
-		SecretKEY string `toml:"SecretKEY"`
-		LiveTime  int    `toml:"LiveTime"`
-	} `toml:"DaDataAPI"`
 }
 
 func NewConfig(cfgPath string) (*Config, error) {

@@ -30,9 +30,23 @@ func main() {
 	//res, err := testGetClients(conn) //pass
 	//res, err := testCreateClient(conn) //pass
 	//res, err := testUpdateClient(conn) //pass
-	res, err := testUpdateDelFlagClients(conn) //
+	//res, err := testUpdateDelFlagClients(conn) //pass
+
+	//Misc
+	res, err := testGetMiscData(conn) //
 
 	fmt.Println(res, err)
+}
+
+func testGetMiscData(conn *grpc.ClientConn) (*api.ResponseMiscData, error) {
+	client := api.NewClientsServicesClient(conn)
+	ctx := context.Background()
+	res, err := client.GetMiscDataToCreateAndUpdateClientAddress(ctx, &api.RequestMiscData{
+		AuthToken: cliToke5,
+		AuthorId:  7,
+	})
+
+	return res, err
 }
 
 func testGetClients(conn *grpc.ClientConn) (*api.ResponseClients, error) {

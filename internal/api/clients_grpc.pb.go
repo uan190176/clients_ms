@@ -52,6 +52,8 @@ type ClientsServicesClient interface {
 	CreateClient(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error)
 	UpdateClient(ctx context.Context, in *RequestClient, opts ...grpc.CallOption) (*ResponseClients, error)
 	UpdateClientsDeletionFlags(ctx context.Context, in *RequestClientsDeletionFlags, opts ...grpc.CallOption) (*ResponseClients, error)
+	// Misc
+	GetMiscDataToCreateAndUpdateClientAddress(ctx context.Context, in *RequestMiscData, opts ...grpc.CallOption) (*ResponseMiscData, error)
 }
 
 type clientsServicesClient struct {
@@ -278,6 +280,15 @@ func (c *clientsServicesClient) UpdateClientsDeletionFlags(ctx context.Context, 
 	return out, nil
 }
 
+func (c *clientsServicesClient) GetMiscDataToCreateAndUpdateClientAddress(ctx context.Context, in *RequestMiscData, opts ...grpc.CallOption) (*ResponseMiscData, error) {
+	out := new(ResponseMiscData)
+	err := c.cc.Invoke(ctx, "/clients.ClientsServices/GetMiscDataToCreateAndUpdateClientAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClientsServicesServer is the server API for ClientsServices service.
 // All implementations must embed UnimplementedClientsServicesServer
 // for forward compatibility
@@ -312,6 +323,8 @@ type ClientsServicesServer interface {
 	CreateClient(context.Context, *RequestClient) (*ResponseClients, error)
 	UpdateClient(context.Context, *RequestClient) (*ResponseClients, error)
 	UpdateClientsDeletionFlags(context.Context, *RequestClientsDeletionFlags) (*ResponseClients, error)
+	// Misc
+	GetMiscDataToCreateAndUpdateClientAddress(context.Context, *RequestMiscData) (*ResponseMiscData, error)
 	mustEmbedUnimplementedClientsServicesServer()
 }
 
@@ -390,6 +403,9 @@ func (UnimplementedClientsServicesServer) UpdateClient(context.Context, *Request
 }
 func (UnimplementedClientsServicesServer) UpdateClientsDeletionFlags(context.Context, *RequestClientsDeletionFlags) (*ResponseClients, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateClientsDeletionFlags not implemented")
+}
+func (UnimplementedClientsServicesServer) GetMiscDataToCreateAndUpdateClientAddress(context.Context, *RequestMiscData) (*ResponseMiscData, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMiscDataToCreateAndUpdateClientAddress not implemented")
 }
 func (UnimplementedClientsServicesServer) mustEmbedUnimplementedClientsServicesServer() {}
 
@@ -836,6 +852,24 @@ func _ClientsServices_UpdateClientsDeletionFlags_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClientsServices_GetMiscDataToCreateAndUpdateClientAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestMiscData)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServicesServer).GetMiscDataToCreateAndUpdateClientAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/clients.ClientsServices/GetMiscDataToCreateAndUpdateClientAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServicesServer).GetMiscDataToCreateAndUpdateClientAddress(ctx, req.(*RequestMiscData))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClientsServices_ServiceDesc is the grpc.ServiceDesc for ClientsServices service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -938,6 +972,10 @@ var ClientsServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateClientsDeletionFlags",
 			Handler:    _ClientsServices_UpdateClientsDeletionFlags_Handler,
+		},
+		{
+			MethodName: "GetMiscDataToCreateAndUpdateClientAddress",
+			Handler:    _ClientsServices_GetMiscDataToCreateAndUpdateClientAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

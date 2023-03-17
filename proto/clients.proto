@@ -110,10 +110,13 @@ service ClientsServices {
   rpc UpdateAddressesDeletionFlags(RequestAddressesDeletionFlags) returns (ResponseAddresses) {} //pass
 
   //Clients
-  rpc GetClients(RequestClient) returns (ResponseClients) {} //
-  rpc CreateClient(RequestClient) returns (ResponseClients) {} //
-  rpc UpdateClient(RequestClient) returns (ResponseClients) {} //
-  rpc UpdateClientsDeletionFlags(RequestClientsDeletionFlags) returns (ResponseClients) {} //
+  rpc GetClients(RequestClient) returns (ResponseClients) {} //pass
+  rpc CreateClient(RequestClient) returns (ResponseClients) {} //pass
+  rpc UpdateClient(RequestClient) returns (ResponseClients) {} //pass
+  rpc UpdateClientsDeletionFlags(RequestClientsDeletionFlags) returns (ResponseClients) {} //pass
+
+  //Misc
+  rpc GetMiscDataToCreateAndUpdateClientAddress(RequestMiscData) returns (ResponseMiscData) {}
 }
 
 
@@ -265,6 +268,14 @@ message RequestClientsDeletionFlags {
   fixed64 AuthorId = 2;
   ClientsMS_Bool IsDeleted = 3;
   repeated fixed64 Ids = 4;
+}
+
+// =============== //
+// Misc data       //
+// =============== //
+message RequestMiscData {
+  string AuthToken = 1;
+  fixed64 AuthorId = 2;
 }
 
 //***********************************************************************
@@ -512,4 +523,14 @@ message Client {
 message ResponseClients {
   repeated Client Clients = 1;
   ClientsMS_Status Status = 2;
+}
+
+// =============== //
+// Misc data       //
+// =============== //
+message ResponseMiscData {
+  repeated Country Countries = 1;
+  repeated Delivery Deliveries = 2;
+  repeated AddressType AddressesTypes = 3;
+  ClientsMS_Status Status = 4;
 }

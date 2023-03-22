@@ -218,25 +218,25 @@ func addWhereToQueryDeliveriesSelect(q string, req *api.RequestDelivery) string 
 
 	// ID
 	if req.Id != 0 {
-		q += fmt.Sprintf(" WHERE delivery_id = %d", req.Id)
+		q += fmt.Sprintf(" WHERE id = %d", req.Id)
 		cnt++
 	}
 
 	// NAME
 	if req.Name != "" {
 		if cnt > 0 {
-			q += " AND delivery_name ILIKE '%" + req.Name + "%'"
+			q += " AND name ILIKE '%" + req.Name + "%'"
 		} else {
-			q += " WHERE delivery_name ILIKE '%" + req.Name + "%'"
+			q += " WHERE name ILIKE '%" + req.Name + "%'"
 		}
 		cnt++
 	}
 	// COMMENT
 	if req.Comment != "" {
 		if cnt > 0 {
-			q += " AND delivery_comment ILIKE '%" + req.Comment + "%'"
+			q += " AND comment ILIKE '%" + req.Comment + "%'"
 		} else {
-			q += " WHERE delivery_comment ILIKE '%" + req.Comment + "%'"
+			q += " WHERE comment ILIKE '%" + req.Comment + "%'"
 		}
 		cnt++
 	}
@@ -246,16 +246,16 @@ func addWhereToQueryDeliveriesSelect(q string, req *api.RequestDelivery) string 
 	switch req.IsDeleted {
 	case api.ClientsMS_Bool_IS_TRUE:
 		if cnt > 0 {
-			q += " AND delivery_isdeleted = true"
+			q += " AND isdeleted = true"
 		} else {
-			q += " WHERE delivery_isdeleted = true"
+			q += " WHERE isdeleted = true"
 		}
 		cnt++
 	case api.ClientsMS_Bool_IS_FALSE:
 		if cnt > 0 {
-			q += " AND delivery_isdeleted = false"
+			q += " AND isdeleted = false"
 		} else {
-			q += " WHERE delivery_isdeleted = false"
+			q += " WHERE isdeleted = false"
 		}
 		cnt++
 	}
